@@ -132,6 +132,19 @@ popd
 # Change default shell to zsh
 sed -i 's/\/bin\/ash/\/usr\/bin\/zsh/g' package/base-files/files/etc/passwd
 
+
+# Modify default IP
+sed -i 's/192.168.1.1/192.168.4.1/g' package/base-files/files/bin/config_generate
+sed -i '/uci commit system/i\uci set system.@system[0].hostname='MilesWrt'' package/lean/default-settings/files/zzz-default-settings
+sed -i "s/OpenWrt /MilesPoupart @ MilesWrt /g" package/lean/default-settings/files/zzz-default-settings
+
+# Test kernel 6.1
+rm -rf target/linux/x86/base-files/etc/board.d/02_network
+cp -f $GITHUB_WORKSPACE/02_network target/linux/x86/base-files/etc/board.d/02_network
+sed -i 's/5.15/6.1/g' target/linux/x86/Makefile
+rm -rf package/base-files/files/etc/banner
+wget -P package/base-files/files/etc https://raw.githubusercontent.com/DHDAXCW/lede-rockchip/stable/package/base-files/files/etc/banner
+
 rm package/base-files/files/etc/banner
 touch package/base-files/files/etc/banner
 echo -e "------------------------------------" >> package/base-files/files/etc/banner
@@ -141,13 +154,3 @@ echo -e " / /|_/ / / / -_|_-< |/ |/ / __/ __/" >> package/base-files/files/etc/b
 echo -e "/_/  /_/_/_/\__/___/__/|__/_/  \__/ " >> package/base-files/files/etc/banner
 echo -e "------------------------------------" >> package/base-files/files/etc/banner
 echo -e "MilesPoupart's MilesWrt built on "$(date +%Y.%m.%d)"\n------------------------------------" >> package/base-files/files/etc/banner
-
-# Modify default IP
-sed -i 's/192.168.1.1/192.168.4.1/g' package/base-files/files/bin/config_generate
-
-# Test kernel 6.1
-rm -rf target/linux/x86/base-files/etc/board.d/02_network
-cp -f $GITHUB_WORKSPACE/02_network target/linux/x86/base-files/etc/board.d/02_network
-sed -i 's/5.15/6.1/g' target/linux/x86/Makefile
-rm -rf package/base-files/files/etc/banner
-wget -P package/base-files/files/etc https://raw.githubusercontent.com/DHDAXCW/lede-rockchip/stable/package/base-files/files/etc/banner
