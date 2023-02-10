@@ -23,6 +23,19 @@ rm -rf ../../customfeeds/luci/applications/luci-app-kodexplorer
 rm -rf openwrt-package/verysync
 rm -rf openwrt-package/luci-app-verysync
 
+# Add luci-app-netdata
+rm -rf ../../customfeeds/luci/applications/luci-app-netdata
+git clone -b patch-1 --depth=1 https://github.com/MilesPoupart/luci-app-netdata
+
+# Add luci-app-partexp
+git clone --depth=1 https://github.com/sirpdboy/luci-app-partexp
+
+# Add luci-app-netspeedtest
+git clone --depth=1 https://github.com/sirpdboy/NetSpeedTest
+
+# Add luci-app-autotimeset
+git clone --depth=1 https://github.com/sirpdboy/luci-app-autotimeset
+
 # Add luci-app-ssr-plus
 git clone --depth=1 https://github.com/fw876/helloworld
 
@@ -119,8 +132,18 @@ popd
 # Change default shell to zsh
 sed -i 's/\/bin\/ash/\/usr\/bin\/zsh/g' package/base-files/files/etc/passwd
 
+rm package/base-files/files/etc/banner
+touch package/base-files/files/etc/banner
+echo -e "------------------------------------" >> package/base-files/files/etc/banner
+echo -e "   __  ____ __      _      __    __ " >> package/base-files/files/etc/banner
+echo -e "  /  |/  (_) /__ __| | /| / /___/ /_" >> package/base-files/files/etc/banner
+echo -e " / /|_/ / / / -_|_-< |/ |/ / __/ __/" >> package/base-files/files/etc/banner
+echo -e "/_/  /_/_/_/\__/___/__/|__/_/  \__/ " >> package/base-files/files/etc/banner
+echo -e "------------------------------------" >> package/base-files/files/etc/banner
+echo -e "MilesPoupart's MilesWrt built on "$(date +%Y.%m.%d)"\n------------------------------------" >> package/base-files/files/etc/banner
+
 # Modify default IP
-sed -i 's/192.168.1.1/192.168.11.1/g' package/base-files/files/bin/config_generate
+sed -i 's/192.168.1.1/192.168.4.1/g' package/base-files/files/bin/config_generate
 
 # Test kernel 6.1
 rm -rf target/linux/x86/base-files/etc/board.d/02_network
