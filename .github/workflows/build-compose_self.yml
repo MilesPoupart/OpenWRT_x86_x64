@@ -146,7 +146,7 @@ jobs:
     - name: MOD index file
       if: inputs.task_setting != 'build-only'
       run: |
-         cd $OPENWRTROOT/package/lean/autocore/files/arm
+         cd $OPENWRTROOT/package/lean/autocore/files/x86
          sed -i '/Load Average/i\\t\t<tr><td width="33%"><%:Github %></td><td><a href="https://github.com/MilesPoupart/OpenWRT_x86_x64"><%:固件下载%></a></td></tr>' index.htm
 
     - name: Install Feeds
