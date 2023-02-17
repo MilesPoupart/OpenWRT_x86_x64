@@ -96,6 +96,9 @@ git clone https://github.com/sbwml/openwrt-alist --depth=1
 # Add luci-app-smartdns & smartdns
 svn export https://github.com/281677160/openwrt-package/trunk/luci-app-smartdns
 
+# Add luci-app-services-wolplus
+svn export https://github.com/sundaqiang/openwrt-packages/trunk/luci-app-wolplus
+
 # Add apk (Apk Packages Manager)
 svn export https://github.com/openwrt/packages/trunk/utils/apk
 
@@ -105,8 +108,8 @@ git clone --depth=1 https://github.com/destan19/OpenAppFilter
 # Add luci-aliyundrive-webdav
 rm -rf ../../customfeeds/luci/applications/luci-app-aliyundrive-webdav 
 rm -rf ../../customfeeds/packages/multimedia/aliyundrive-webdav
-svn co https://github.com/messense/aliyundrive-webdav/trunk/openwrt/aliyundrive-webdav
-svn co https://github.com/messense/aliyundrive-webdav/trunk/openwrt/luci-app-aliyundrive-webdav
+svn export https://github.com/messense/aliyundrive-webdav/trunk/openwrt/aliyundrive-webdav
+svn export https://github.com/messense/aliyundrive-webdav/trunk/openwrt/luci-app-aliyundrive-webdav
 popd
 
 # Add Pandownload
