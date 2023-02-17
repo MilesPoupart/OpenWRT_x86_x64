@@ -96,7 +96,7 @@ git clone https://github.com/sbwml/openwrt-alist --depth=1
 # Add luci-app-smartdns & smartdns
 svn export https://github.com/281677160/openwrt-package/trunk/luci-app-smartdns
 
-# Add luci-app-services-wolplus
+# Add luci-app-wolplus
 svn export https://github.com/sundaqiang/openwrt-packages/trunk/luci-app-wolplus
 
 # Add apk (Apk Packages Manager)
