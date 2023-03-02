@@ -25,6 +25,8 @@ rm -rf ../../customfeeds/luci/applications/luci-app-ipsec-server
 rm -rf openwrt-package/verysync
 rm -rf openwrt-package/luci-app-verysync
 
+rm -rf ../../customfeeds/packages/net/adguardhome
+
 # Add luci-app-netdata
 rm -rf ../../customfeeds/luci/applications/luci-app-netdata
 git clone --depth=1 https://github.com/MilesPoupart/luci-app-netdata
