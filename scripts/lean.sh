@@ -92,6 +92,9 @@ rm -rf ./luci-theme-argon/htdocs/luci-static/argon/img/bg1.jpg
 cp -f $GITHUB_WORKSPACE/data/bg1.jpg luci-theme-argon/htdocs/luci-static/argon/img/bg1.jpg
 git clone https://github.com/DHDAXCW/theme
 rm -rf theme/luci-theme-design
+rm -rf ../../customfeeds/luci/themes/luci-theme-design
+git clone --depth=1 https://github.com/gngpp/luci-app-design-config
+git clone --depth=1 https://github.com/gngpp/luci-theme-design
 
 # Add subconverter
 git clone --depth=1 https://github.com/tindy2013/openwrt-subconverter
