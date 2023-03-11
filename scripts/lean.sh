@@ -21,6 +21,11 @@ git clone https://github.com/sbwml/luci-app-alist package/alist
 rm -rf feeds/packages/lang/golang
 svn export https://github.com/sbwml/packages_lang_golang/branches/19.x feeds/packages/lang/golang
 
+# Add luci-app-watchcat-plus
+# rm -rf feeds/packages/utils/watchcat
+# svn co https://github.com/openwrt/packages/trunk/utils/watchcat feeds/packages/utils/watchcat
+git clone https://github.com/gngpp/luci-app-watchcat-plus.git package/luci-app-watchcat-plus
+
 mkdir package/community
 pushd package/community
 
@@ -162,7 +167,7 @@ sed -i "s/OpenWrt /MilesPoupart @ MilesWrt /g" package/lean/default-settings/fil
 # Test kernel 6.1
 rm -rf target/linux/x86/base-files/etc/board.d/02_network
 cp -f $GITHUB_WORKSPACE/02_network target/linux/x86/base-files/etc/board.d/02_network
-# sed -i 's/5.15/6.1/g' target/linux/x86/Makefile
+sed -i 's/5.15/6.1/g' target/linux/x86/Makefile
 rm -rf package/base-files/files/etc/banner
 wget -P package/base-files/files/etc https://raw.githubusercontent.com/DHDAXCW/lede-rockchip/stable/package/base-files/files/etc/banner
 
@@ -175,3 +180,5 @@ echo -e " / /|_/ / / / -_|_-< |/ |/ / __/ __/" >> package/base-files/files/etc/b
 echo -e "/_/  /_/_/_/\__/___/__/|__/_/  \__/ " >> package/base-files/files/etc/banner
 echo -e "------------------------------------" >> package/base-files/files/etc/banner
 echo -e "MilesPoupart's MilesWrt built on "$(date +%Y.%m.%d)"\n------------------------------------" >> package/base-files/files/etc/banner
+
+cp -r ../target/linux/generic/pending-6.1/ ./target/linux/generic/
