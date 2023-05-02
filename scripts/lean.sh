@@ -9,12 +9,17 @@
 #=================================================
 # Clone community packages to package/community
 
+rm -rf package/libs/libnl-tiny
 rm -rf package/kernel/mac80211
 rm -rf package/kernel/mt76
 rm -rf package/network/services/hostapd
-svn export https://github.com/DHDAXCW/openwrt-beta/trunk/package/kernel/mac80211 package/kernel/mac80211
+svn export https://github.com/openwrt/openwrt/trunk/package/libs/libnl-tiny package/libs/libnl-tiny
+svn export https://github.com/openwrt/openwrt/trunk/package/kernel/mac80211 package/kernel/mac80211
 svn export https://github.com/DHDAXCW/lede-rockchip/trunk/package/kernel/mt76 package/kernel/mt76
-svn export https://github.com/DHDAXCW/openwrt-beta/trunk/package/network/services/hostapd package/network/services/hostapd
+svn export https://github.com/openwrt/openwrt/trunk/package/network/services/hostapd package/network/services/hostapd
+
+rm -rf package/kernel/mac80211/Makefile
+cp -f $GITHUB_WORKSPACE/Makefile package/kernel/mac80211/Makefile
 
 # alist
 git clone https://github.com/sbwml/luci-app-alist package/alist
@@ -163,7 +168,7 @@ sed -i "s/OpenWrt /MilesPoupart @ MilesWrt /g" package/lean/default-settings/fil
 # Test kernel 6.1
 rm -rf target/linux/x86/base-files/etc/board.d/02_network
 cp -f $GITHUB_WORKSPACE/02_network target/linux/x86/base-files/etc/board.d/02_network
-sed -i 's/5.15/6.1/g' target/linux/x86/Makefile
+# sed -i 's/5.15/6.1/g' target/linux/x86/Makefile
 rm -rf package/base-files/files/etc/banner
 wget -P package/base-files/files/etc https://raw.githubusercontent.com/DHDAXCW/lede-rockchip/stable/package/base-files/files/etc/banner
 
