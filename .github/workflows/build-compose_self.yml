@@ -12,6 +12,16 @@ on:
   repository_dispatch:
   workflow_dispatch:
     inputs:
+      kernel_version:
+        description: 'Linux kernel version'
+        required: true
+        default: '6.1'
+        type: choice
+        options:
+        - '6.1'
+        - '5.15'
+        - '5.10'
+        - '5.4'
       use_machine:
         description: 'Machine'
         required: true
@@ -54,6 +64,7 @@ env:
   TZ: Asia/Shanghai
   IMAGE: milespoupart/action-openwrt-cache:x86p2_${{ inputs.compile_version }}
   COMMIT_ID: ${{ vars.COMMIT_ID }}
+  KERNEL_VER: ${{ inputs.kernel_version }}
 
 jobs:
 
@@ -167,6 +178,10 @@ jobs:
         chmod +x scripts/*.sh
         cd $OPENWRTROOT
         ../$DIY_SH
+        if [ "$KERNEL_VER" != "5.15" ]; then
+            sed -i 's/5.15/$KERNEL_VER/g' target/linux/x86/Makefile
+            cat target/linux/x86/Makefile
+        fi
         ../scripts/preset-clash-core.sh amd64
         ../scripts/preset-terminal-tools.sh
         sed -i '$a\CONFIG_DEVEL=y\nCONFIG_LOCALMIRROR=\"https://openwrt.cc/dl/coolsnowwolf/lede\"' .config
