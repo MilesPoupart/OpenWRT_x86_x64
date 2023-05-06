@@ -179,7 +179,7 @@ jobs:
         cd $OPENWRTROOT
         ../$DIY_SH
         if [ "$KERNEL_VER" != "5.15" ]; then
-            sed -i 's/5.15/$KERNEL_VER/g' target/linux/x86/Makefile
+            sed -i "s/5.15/$KERNEL_VER/g" target/linux/x86/Makefile
             cat target/linux/x86/Makefile
         fi
         ../scripts/preset-clash-core.sh amd64
