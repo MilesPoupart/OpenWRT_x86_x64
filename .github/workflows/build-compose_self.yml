@@ -178,8 +178,8 @@ jobs:
         chmod +x scripts/*.sh
         cd $OPENWRTROOT
         ../$DIY_SH
-        if [ "$KERNEL_VER" != "5.15" ]; then
-            sed -i "s/5.15/$KERNEL_VER/g" target/linux/x86/Makefile
+        if [ "$KERNEL_VER" != "6.1" ]; then
+            sed -i "s/6.1/$KERNEL_VER/g" target/linux/x86/Makefile
             # cat target/linux/x86/Makefile
         fi
         ../scripts/preset-clash-core.sh amd64
