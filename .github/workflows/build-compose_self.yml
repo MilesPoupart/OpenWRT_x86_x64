@@ -439,7 +439,7 @@ jobs:
       env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
-          name: ${{ steps.tag.outputs.release_date }} x86-64-Linux-${{ needs.CompileFirmware.outputs.KERNEL_VERSION }} 固件
+          name: ${{ needs.CompileFirmware.outputs.RELEASE_DATE }} x86-64-Linux-${{ needs.CompileFirmware.outputs.KERNEL_VERSION }} 固件
           tag_name: ${{ needs.CompileFirmware.outputs.RELEASE_TAG }}
           body_path: release.txt
           files: ${{ needs.CompileFirmware.outputs.FIRMWARE }}/*
