@@ -23,7 +23,7 @@ svn export https://github.com/openwrt/openwrt/trunk/package/network/services/hos
 # alist
 git clone https://github.com/sbwml/luci-app-alist package/alist
 rm -rf feeds/packages/lang/golang
-svn export https://github.com/sbwml/packages_lang_golang/branches/19.x feeds/packages/lang/golang
+git clone https://github.com/sbwml/packages_lang_golang -b 20.x feeds/packages/lang/golang
 
 # Add luci-app-watchcat-plus
 # rm -rf feeds/packages/utils/watchcat
@@ -160,7 +160,7 @@ sed -i "s/OpenWrt /MilesPoupart @ MilesWrt /g" package/lean/default-settings/fil
 # Test kernel 6.1
 rm -rf target/linux/x86/base-files/etc/board.d/02_network
 cp -f $GITHUB_WORKSPACE/02_network target/linux/x86/base-files/etc/board.d/02_network
-# sed -i 's/5.15/6.1/g' target/linux/x86/Makefile
+sed -i 's/6.1/5.15/g' target/linux/x86/Makefile
 rm -rf package/base-files/files/etc/banner
 wget -P package/base-files/files/etc https://raw.githubusercontent.com/DHDAXCW/lede-rockchip/stable/package/base-files/files/etc/banner
 
