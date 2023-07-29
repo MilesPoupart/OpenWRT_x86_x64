@@ -174,4 +174,4 @@ echo -e "/_/  /_/_/_/\__/___/__/|__/_/  \__/ " >> package/base-files/files/etc/b
 echo -e "------------------------------------" >> package/base-files/files/etc/banner
 echo -e "MilesPoupart's MilesWrt built on "$(date +%Y.%m.%d)"\n------------------------------------" >> package/base-files/files/etc/banner
 
-cp -r ../target/linux/generic/pending-6.1/ ./target/linux/generic/
+# cp -r ../target/linux/generic/pending-6.1/ ./target/linux/generic/
