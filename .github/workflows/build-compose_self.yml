@@ -12,6 +12,15 @@ on:
   repository_dispatch:
   workflow_dispatch:
     inputs:
+      lede_source:
+        description: 'LEDE source'
+        required: true
+        default: DHDAXCW/lede-rockchip
+        type: choice
+        options:
+        - DHDAXCW/lede-rockchip
+        - MilesPoupart/lede-rockchip
+        - coolsnowwolf/lede
       kernel_version:
         description: 'Linux kernel version'
         required: true
@@ -55,8 +64,8 @@ on:
   #   types: started
 
 env:
-  REPO_URL: https://github.com/coolsnowwolf/lede
-  REPO_BRANCH: master
+  REPO_URL: https://github.com/${{ inputs.lede_source }}
+  REPO_BRANCH: stable
   CONFIG_FILE: configs/lean/lean_${{ inputs.compile_version }}.config
   DIY_SH: scripts/lean.sh
   KMODS_IN_FIRMWARE: true
@@ -128,7 +137,7 @@ jobs:
       if: inputs.task_setting != 'build-only'
       run: |
         df -hT $PWD
-        git clone $REPO_URL -b $REPO_BRANCH openwrt
+        git clone $REPO_URL openwrt
         # cd openwrt
         
     # - name: Reset Version
