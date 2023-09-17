@@ -61,9 +61,9 @@ sed -i "s/\"control\"/\"system\"/g" luci-app-autotimeset/luasrc/controller/autot
 git clone --depth=1 https://github.com/fw876/helloworld
 
 # Add luci-app-passwall
-git clone https://github.com/xiaorouji/openwrt-passwall
+git clone --depth=1 https://github.com/xiaorouji/openwrt-passwall
 git clone --depth=1 https://github.com/xiaorouji/openwrt-passwall2
-svn export https://github.com/xiaorouji/openwrt-passwall/branches/luci/luci-app-passwall
+git clone --depth=1 https://github.com/xiaorouji/openwrt-passwall-packages
 
 # Add luci-app-unblockneteasemusic
 rm -rf ../../customfeeds/luci/applications/luci-app-unblockmusic
