@@ -9,16 +9,16 @@
 #=================================================
 # Clone community packages to package/community
 
-#rm -rf package/libs/libnl-tiny
-#rm -rf package/kernel/mac80211
-#rm -rf package/kernel/mt76
-#rm -rf package/network/services/hostapd
-#rm -rf package/wwan
-#svn export https://github.com/DHDAXCW/lede-rockchip/trunk/package/wwan package/wwan
-#svn export https://github.com/openwrt/openwrt/trunk/package/libs/libnl-tiny package/libs/libnl-tiny
-#svn export https://github.com/openwrt/openwrt/trunk/package/kernel/mac80211 package/kernel/mac80211
-#svn export https://github.com/DHDAXCW/lede-rockchip/trunk/package/kernel/mt76 package/kernel/mt76
-#svn export https://github.com/openwrt/openwrt/trunk/package/network/services/hostapd package/network/services/hostapd
+rm -rf package/libs/libnl-tiny
+rm -rf package/kernel/mac80211
+rm -rf package/kernel/mt76
+rm -rf package/network/services/hostapd
+rm -rf package/wwan
+svn export https://github.com/DHDAXCW/lede-rockchip/trunk/package/wwan package/wwan
+svn export https://github.com/openwrt/openwrt/trunk/package/libs/libnl-tiny package/libs/libnl-tiny
+svn export https://github.com/openwrt/openwrt/trunk/package/kernel/mac80211 package/kernel/mac80211
+svn export https://github.com/DHDAXCW/lede-rockchip/trunk/package/kernel/mt76 package/kernel/mt76
+svn export https://github.com/openwrt/openwrt/trunk/package/network/services/hostapd package/network/services/hostapd
 
 # alist
 git clone https://github.com/sbwml/luci-app-alist package/alist
@@ -159,6 +159,9 @@ sed -i "s/OpenWrt /MilesPoupart @ MilesWrt /g" package/lean/default-settings/fil
 
 # Test kernel 6.1
 # sed -i 's/6.1/5.15/g' target/linux/x86/Makefile
+
+rm -rf target/linux/x86/base-files/etc/board.d/02_network		
+cp -f $GITHUB_WORKSPACE/02_network target/linux/x86/base-files/etc/board.d/02_network
 
 rm package/base-files/files/etc/banner
 touch package/base-files/files/etc/banner
