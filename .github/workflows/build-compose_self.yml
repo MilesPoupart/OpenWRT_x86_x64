@@ -419,7 +419,7 @@ jobs:
           echo "RELEASE_TAG=$(date +"%Y.%m.%d")-Lean1" >> $GITHUB_OUTPUT
           echo "RELEASE_DATE=$(date +"%Y.%m.%d")" >> $GITHUB_OUTPUT
           touch release.txt
-          echo "后台地址：192.168.2.1
+          echo "后台地址：192.168.4.1
                 full   = 全插件
                 docker = 带docker
                 slim   = 精简版
