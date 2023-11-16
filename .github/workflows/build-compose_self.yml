@@ -24,7 +24,7 @@ on:
       kernel_version:
         description: 'Linux kernel version'
         required: true
-        default: '5.15'
+        default: '6.1'
         type: choice
         options:
         - '6.1'
