@@ -34,11 +34,11 @@ on:
       use_machine:
         description: 'Machine'
         required: true
-        default: 10700
+        default: '10700'
         type: choice
         options:
-        - 7700HQ
-        - 10700
+        - '7700HQ'
+        - '10700'
       compile_version:
         description: 'Version'
         required: true
