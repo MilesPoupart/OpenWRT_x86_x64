@@ -19,6 +19,8 @@
 - 固件下载地址：https://github.com/MilesPoupart/OpenWRT_x86_x64/releases
 - 完美支持aw7916 minipcie电流要求3a以上才不会掉卡
 - 电报群：https://t.me/DHDAXCW
+- 由于编译出错，已移除wwan支持
+
 # 插件展示
  ![Alt text](scripts/20.png?raw=true "Title")
 
