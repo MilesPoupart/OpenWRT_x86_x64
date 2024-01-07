@@ -60,12 +60,15 @@ git clone --depth=1 https://github.com/sirpdboy/luci-app-autotimeset
 sed -i "s/\"control\"/\"system\"/g" luci-app-autotimeset/luasrc/controller/autotimeset.lua
 
 # Add luci-app-ssr-plus
-git clone -b main --depth=1 https://github.com/fw876/helloworld
+git clone --depth=1 -b main https://github.com/fw876/helloworld
+
+# add luci-app-daed
+git clone https://github.com/sbwml/luci-app-daed-next
 
 # Add luci-app-passwall
-git clone --depth=1 https://github.com/xiaorouji/openwrt-passwall
-git clone --depth=1 https://github.com/xiaorouji/openwrt-passwall2
 git clone --depth=1 https://github.com/xiaorouji/openwrt-passwall-packages
+git clone --depth=1 https://github.com/xiaorouji/openwrt-passwall2
+svn export https://github.com/xiaorouji/openwrt-passwall/trunk/luci-app-passwall
 
 # Add luci-app-unblockneteasemusic
 rm -rf ../../customfeeds/luci/applications/luci-app-unblockmusic

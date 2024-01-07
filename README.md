@@ -12,7 +12,7 @@
 
 # 基于骷髅头源码的x86-x64 <img src="https://img.shields.io/github/downloads/MilesPoupart/OpenWRT_x86_x64/total.svg?style=for-the-badge&color=32C955"/>
 ## 👉使用本固件前，请严格遵守国家互联网使用相关法律规定,不要违反国家法律规定！👈
-## 未经许可不得用于任何商用用途。
+## 本固件在任何组织和个人不得用于任何商业盈利用途。
 
 ### 默认编译  
 - 用户名：root 密码：password  管理IP：192.168.4.1
