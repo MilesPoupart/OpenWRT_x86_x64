@@ -7,33 +7,53 @@
 # Author: SuLingGG
 # Blog: https://mlapp.cn
 #=================================================
+now_dir=$(pwd)
+clone_dir=${now_dir}"/../git_clone_temporary_space"
+if [ ! -d "$clone_dir" ]; then
+  mkdir "$clone_dir"
+fi
+function github_partial_clone(){
+    url_prefix="https://github.com/" author_name="$1" repository_name="$2" branch_name="$3" required_dir="$4" saved_dir="$5"
+    if [${branch_name}="use_default_branch"]; then
+        branch_option="-b "${branch_name}
+    else
+        branch_option=""
+    fi
+    if [ ! -d ${saved_dir} ]; then
+        mkdir -vp ${saved_dir}
+    fi
+    if [ ! -d ${clone_dir}"/"${repository_name} ]; then
+        git clone --depth=1 ${branch_option} ${url_prefix}${author_name}"/"${repository_name}".git" ${clone_dir}"/"${repository_name}
+    fi
+    mv ${clone_dir}"/"${repository_name}"/"${required_dir}/* ${saved_dir}
+    rm -rf ${clone_dir}"/"${repository_name}
+}
+
 # Clone community packages to package/community
 
 rm -rf package/base-files/files/lib/preinit/80_mount_root
-svn export https://github.com/DHDAXCW/lede-rockchip/trunk/package/base-files/files/lib/preinit/80_mount_root package/base-files/files/lib/preinit/80_mount_root
+wget -P package/base-files/files/lib/preinit https://raw.githubusercontent.com/DHDAXCW/lede-rockchip/stable/package/base-files/files/lib/preinit/80_mount_root 
 # rm -rf package/libs/libnl-tiny
 # rm -rf package/kernel/mac80211
 # rm -rf package/kernel/mt76
 # rm -rf package/network/services/hostapd
 # rm -rf package/wwan
-# svn export https://github.com/DHDAXCW/lede-rockchip/trunk/package/wwan package/wwan
-# svn export https://github.com/openwrt/openwrt/trunk/package/libs/libnl-tiny package/libs/libnl-tiny
-# svn export https://github.com/openwrt/openwrt/trunk/package/kernel/mac80211 package/kernel/mac80211
-# svn export https://github.com/DHDAXCW/lede-rockchip/trunk/package/kernel/mt76 package/kernel/mt76
-# svn export https://github.com/openwrt/openwrt/trunk/package/network/services/hostapd package/network/services/hostapd
+# github_partial_clone DHDAXCW lede-rockchip use_default_branch package/wwan package/wwan
+# github_partial_clone openwrt openwrt use_default_branch package/libs/libnl-tiny package/libs/libnl-tiny
+# github_partial_clone openwrt openwrt use_default_branch package/kernel/mac80211 package/kernel/mac80211
+# github_partial_clone DHDAXCW lede-rockchip use_default_branch package/kernel/mt76 package/kernel/mt76
+# github_partial_clone openwrt openwrt use_default_branch package/network/services/hostapd package/network/services/hostapd
 
 # alist
 git clone https://github.com/sbwml/luci-app-alist package/alist
 rm -rf feeds/packages/lang/golang
 git clone https://github.com/sbwml/packages_lang_golang -b 21.x feeds/packages/lang/golang
 
-# Add luci-app-watchcat-plus
-# rm -rf feeds/packages/utils/watchcat
-# svn co https://github.com/openwrt/packages/trunk/utils/watchcat feeds/packages/utils/watchcat
-git clone https://github.com/gngpp/luci-app-watchcat-plus.git package/luci-app-watchcat-plus
-
 mkdir package/community
 pushd package/community
+
+# Add luci-app-watchcat-plus
+git clone https://github.com/gngpp/luci-app-watchcat-plus.git
 
 # Add Lienol's Packages
 git clone --depth=1 https://github.com/Lienol/openwrt-package
@@ -66,9 +86,9 @@ git clone --depth=1 -b main https://github.com/fw876/helloworld
 git clone https://github.com/sbwml/luci-app-daed-next
 
 # Add luci-app-passwall
-git clone --depth=1 https://github.com/xiaorouji/openwrt-passwall-packages
+git clone --depth=1 https://github.com/xiaorouji/openwrt-passwall
 git clone --depth=1 https://github.com/xiaorouji/openwrt-passwall2
-svn export https://github.com/xiaorouji/openwrt-passwall/trunk/luci-app-passwall
+git clone --depth=1 https://github.com/xiaorouji/openwrt-passwall-packages
 
 # Add luci-app-unblockneteasemusic
 rm -rf ../../customfeeds/luci/applications/luci-app-unblockmusic
@@ -85,11 +105,11 @@ git clone --depth=1 https://github.com/ysc3839/luci-proto-minieap
 git clone --depth=1 https://github.com/rufengsuixing/luci-app-onliner
 
 # Add ddnsto & linkease
-svn export https://github.com/linkease/nas-packages-luci/trunk/luci/luci-app-ddnsto
-svn export https://github.com/linkease/nas-packages/trunk/network/services/ddnsto
+github_partial_clone linkease nas-packages-luci use_default_branch luci/luci-app-ddnsto luci-app-ddnsto
+github_partial_clone linkease nas-packages use_default_branch network/services/ddnsto ddnsto
 
 # Add OpenClash
-svn export https://github.com/vernesong/OpenClash/trunk/luci-app-openclash
+github_partial_clone vernesong OpenClash use_default_branch luci-app-openclash luci-app-openclash
 
 # Add luci-app-poweroff
 git clone --depth=1 https://github.com/esirplayground/luci-app-poweroff
@@ -114,15 +134,14 @@ git clone --depth=1 https://github.com/tindy2013/openwrt-subconverter
 git clone https://github.com/sbwml/openwrt-alist --depth=1
 
 # Add luci-app-smartdns & smartdns
-# svn export https://github.com/281677160/openwrt-package/trunk/luci-app-smartdns
 rm -rf ../../customfeeds/luci/applications/luci-app-smartdns
 git clone --depth=1 -b lede https://github.com/pymumu/luci-app-smartdns
 
 # Add luci-app-wolplus
-svn export https://github.com/sundaqiang/openwrt-packages/trunk/luci-app-wolplus
+github_partial_clone sundaqiang openwrt-packages use_default_branch luci-app-wolplus luci-app-wolplus
 
 # Add apk (Apk Packages Manager)
-svn export https://github.com/openwrt/packages/trunk/utils/apk
+github_partial_clone openwrt packages use_default_branch utils/apk apk
 
 # Add OpenAppFilter
 git clone --depth=1 https://github.com/destan19/OpenAppFilter
@@ -130,13 +149,13 @@ git clone --depth=1 https://github.com/destan19/OpenAppFilter
 # Add luci-aliyundrive-webdav
 rm -rf ../../customfeeds/luci/applications/luci-app-aliyundrive-webdav
 rm -rf ../../customfeeds/packages/multimedia/aliyundrive-webdav
-svn export https://github.com/messense/aliyundrive-webdav/trunk/openwrt/aliyundrive-webdav
-svn export https://github.com/messense/aliyundrive-webdav/trunk/openwrt/luci-app-aliyundrive-webdav
+github_partial_clone messense aliyundrive-webdav use_default_branch openwrt/aliyundrive-webdav aliyundrive-webdav
+github_partial_clone messense aliyundrive-webdav use_default_branch openwrt/luci-app-aliyundrive-webdav luci-app-aliyundrive-webdav
 popd
 
 # Add Pandownload
 pushd package/lean
-svn export https://github.com/immortalwrt/packages/trunk/net/pandownload-fake-server
+github_partial_clone immortalwrt packages use_default_branch net/pandownload-fake-server pandownload-fake-server
 popd
 
 # Mod zzz-default-settings
@@ -151,7 +170,7 @@ popd
 # Fix libssh
 pushd feeds/packages/libs
 rm -rf libssh
-svn export https://github.com/openwrt/packages/trunk/libs/libssh
+github_partial_clone openwrt packages use_default_branch libs/libssh libssh
 popd
 
 # Change default shell to zsh
