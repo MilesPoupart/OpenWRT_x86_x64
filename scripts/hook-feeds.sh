@@ -29,6 +29,7 @@ rm -rf luci/applications/luci-app-eqos
 github_partial_clone immortalwrt luci use_default_branch applications/luci-app-eqos luci/applications/luci-app-eqos
 
 # Add luci-proto-modemmanager
+rm -rf luci/protocols/luci-proto-modemmanager
 github_partial_clone immortalwrt luci use_default_branch protocols/luci-proto-modemmanager luci/protocols/luci-proto-modemmanager
 
 # Add luci-app-gowebdav
