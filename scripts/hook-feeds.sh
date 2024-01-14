@@ -7,9 +7,9 @@ fi
 function github_partial_clone(){
     url_prefix="https://github.com/" author_name="$1" repository_name="$2" branch_name="$3" required_dir="$4" saved_dir="$5"
     if [ "$branch_name" == "use_default_branch" ]; then
-        branch_option="-b "${branch_name}
-    else
         branch_option=""
+    else        
+        branch_option="-b "${branch_name}
     fi
     if [ ! -d ${saved_dir} ]; then
         mkdir -vp ${saved_dir}
