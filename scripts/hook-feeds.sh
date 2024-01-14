@@ -25,6 +25,7 @@ function github_partial_clone(){
 pushd customfeeds
 
 # Add luci-app-eqos
+rm -rf luci/applications/luci-app-eqos
 github_partial_clone immortalwrt luci use_default_branch applications/luci-app-eqos luci/applications/luci-app-eqos
 
 # Add luci-proto-modemmanager
