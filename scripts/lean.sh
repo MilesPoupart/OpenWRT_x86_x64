@@ -189,8 +189,6 @@ sed -i "s/OpenWrt /MilesPoupart @ MilesWrt /g" package/lean/default-settings/fil
 rm -rf target/linux/x86/base-files/etc/board.d/02_network		
 cp -f $GITHUB_WORKSPACE/02_network target/linux/x86/base-files/etc/board.d/02_network
 
-cat $GITHUB_WORKSPACE/xdp-sockets-diag_support.mk >> package/kernel/linux/modules/netsupport.mk
-
 rm package/base-files/files/etc/banner
 touch package/base-files/files/etc/banner
 echo -e "------------------------------------" >> package/base-files/files/etc/banner

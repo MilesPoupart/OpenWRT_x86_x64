@@ -192,6 +192,9 @@ jobs:
             sed -i "s/6.1/$KERNEL_VER/g" target/linux/x86/Makefile
             # cat target/linux/x86/Makefile
         fi
+        if [[ "$REPO_URL" = "https://github.com/coolsnowwolf/lede" || "$REPO_URL" = "https://github.com/MilesPoupart/lede" ]]; then
+            cat $GITHUB_WORKSPACE/xdp-sockets-diag_support.mk >> package/kernel/linux/modules/netsupport.mk
+        fi
         ../scripts/preset-clash-core.sh amd64
         ../scripts/preset-terminal-tools.sh
         sed -i '$a\CONFIG_DEVEL=y\nCONFIG_LOCALMIRROR=\"https://openwrt.cc/dl/coolsnowwolf/lede\"' .config
