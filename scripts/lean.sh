@@ -104,6 +104,10 @@ git clone --depth=1 https://github.com/ysc3839/luci-proto-minieap
 # Add luci-app-onliner (need luci-app-nlbwmon)
 git clone --depth=1 https://github.com/rufengsuixing/luci-app-onliner
 
+# Add ServerChan
+rm -rf ../../customfeeds/luci/applications/luci-app-serverchan
+git clone -b openwrt-18.06 --depth=1 https://github.com/tty228/luci-app-wechatpush.git
+
 # Add ddnsto & linkease
 github_partial_clone linkease nas-packages-luci use_default_branch luci/luci-app-ddnsto luci-app-ddnsto
 github_partial_clone linkease nas-packages use_default_branch network/services/ddnsto ddnsto
