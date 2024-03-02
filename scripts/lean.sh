@@ -79,6 +79,11 @@ git clone --depth=1 https://github.com/sirpdboy/NetSpeedTest
 git clone --depth=1 https://github.com/sirpdboy/luci-app-autotimeset
 sed -i "s/\"control\"/\"system\"/g" luci-app-autotimeset/luasrc/controller/autotimeset.lua
 
+# Add mosdns
+rm -rf ../../customfeeds/packages/net/mosdns
+rm -rf ../../customfeeds/applications/luci-app-mosdns
+git clone --depth=1 https://github.com/sbwml/luci-app-mosdns
+
 # Add luci-app-ssr-plus
 git clone --depth=1 -b main https://github.com/fw876/helloworld
 
