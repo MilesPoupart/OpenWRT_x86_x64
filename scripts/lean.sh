@@ -86,7 +86,7 @@ rm -rf ../../customfeeds/applications/luci-app-mosdns
 git clone --depth=1 https://github.com/sbwml/luci-app-mosdns
 
 # Add luci-app-ssr-plus
-git clone --depth=1 -b main https://github.com/fw876/helloworld
+git clone --depth=1 https://github.com/fw876/helloworld
 
 # add luci-app-daed
 git clone https://github.com/sbwml/luci-app-daed-next
