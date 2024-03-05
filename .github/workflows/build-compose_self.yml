@@ -67,7 +67,7 @@ on:
 env:
   REPO_URL: https://github.com/${{ inputs.lede_source }}
   REPO_BRANCH: stable
-  CONFIG_FILE: configs/lean/lean_${{ inputs.compile_version }}.config
+  CONFIG_FILE: configs/lean/${{ inputs.compile_version }}.config
   DIY_SH: scripts/lean.sh
   KMODS_IN_FIRMWARE: true
   UPLOAD_RELEASE: true
