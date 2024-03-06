@@ -40,6 +40,7 @@ on:
         options:
         - '7700HQ'
         - '10700'
+        - 'V100Server'
       compile_version:
         description: 'Version'
         required: true
