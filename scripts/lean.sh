@@ -67,13 +67,13 @@ rm -rf ../../customfeeds/packages/net/adguardhome
 
 # Add luci-app-netdata
 rm -rf ../../customfeeds/luci/applications/luci-app-netdata
-git clone --depth=1 https://github.com/sirpdboy/luci-app-netdata
+git clone --depth=1 https://github.com/MilesPoupart/luci-app-netdata
 
 # Add luci-app-partexp
 git clone --depth=1 https://github.com/sirpdboy/luci-app-partexp
 
 # Add luci-app-netspeedtest
-git clone --depth=1 https://github.com/sirpdboy/NetSpeedTest
+git clone --depth=1 https://github.com/MilesPoupart/netspeedtest
 
 # Add luci-app-autotimeset
 git clone --depth=1 https://github.com/sirpdboy/luci-app-autotimeset
