@@ -73,7 +73,7 @@ git clone --depth=1 https://github.com/sirpdboy/luci-app-netdata
 git clone --depth=1 https://github.com/sirpdboy/luci-app-partexp
 
 # Add luci-app-netspeedtest
-git clone --depth=1 https://github.com/MilesPoupart/netspeedtest
+git clone --depth=1 https://github.com/sirpdboy/NetSpeedTest
 
 # Add luci-app-autotimeset
 git clone --depth=1 https://github.com/sirpdboy/luci-app-autotimeset
