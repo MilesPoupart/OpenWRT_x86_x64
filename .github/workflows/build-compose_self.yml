@@ -28,6 +28,7 @@ on:
         default: '6.1'
         type: choice
         options:
+        - '6.6'
         - '6.1'
         - '5.15'
         - '5.10'
