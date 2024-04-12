@@ -50,8 +50,6 @@ on:
         options:
         - docker
         - full
-        - stable
-        - beggar
       task_setting:
         description: 'Task Settings'
         required: true
@@ -69,7 +67,7 @@ on:
 env:
   REPO_URL: https://github.com/${{ inputs.lede_source }}
   REPO_BRANCH: stable
-  CONFIG_FILE: configs/lean/${{ inputs.compile_version }}.config
+  CONFIG_FILE: configs/lean/merged.config
   DIY_SH: scripts/lean.sh
   KMODS_IN_FIRMWARE: true
   UPLOAD_RELEASE: true
@@ -196,6 +194,20 @@ jobs:
         fi
         ../scripts/preset-clash-core.sh amd64
         ../scripts/preset-terminal-tools.sh
+        if [${{ inputs.compile_version }} == "docker"]; then
+            echo '
+            CONFIG_DOCKER_CGROUP_OPTIONS=y
+            CONFIG_DOCKER_NET_ENCRYPT=y
+            CONFIG_DOCKER_NET_MACVLAN=y
+            CONFIG_DOCKER_NET_OVERLAY=y
+            CONFIG_DOCKER_NET_TFTP=y
+            CONFIG_DOCKER_OPTIONAL_FEATURES=y
+            CONFIG_DOCKER_STO_BTRFS=y
+            CONFIG_DOCKER_STO_EXT4=y
+            CONFIG_PACKAGE_luci-app-dockerman=y
+            CONFIG_PACKAGE_luci-lib-docker=y
+            ' >> .config
+        fi
         sed -i '$a\CONFIG_DEVEL=y\nCONFIG_LOCALMIRROR=\"https://openwrt.cc/dl/coolsnowwolf/lede\"' .config
         make defconfig
         
@@ -425,9 +437,7 @@ jobs:
           echo "本次编译的openwrt源：${{ inputs.lede_source }}
                 后台地址：192.168.4.1
                 full   = 全插件
-                docker = 带docker
-                slim   = 精简版
-                beggar = 乞丐版" >> release.txt
+                docker = 带docker" >> release.txt
           echo "RELEASE_STATUS=success" >> $GITHUB_OUTPUT
 
   UploadFirmware:
