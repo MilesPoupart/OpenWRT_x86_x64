@@ -115,7 +115,9 @@ git clone -b openwrt-18.06 --depth=1 https://github.com/tty228/luci-app-wechatpu
 
 # Add ddnsto & linkease
 github_partial_clone linkease nas-packages-luci use_default_branch luci/luci-app-ddnsto luci-app-ddnsto
+github_partial_clone linkease nas-packages-luci use_default_branch luci/luci-app-linkease luci-app-linkease
 github_partial_clone linkease nas-packages use_default_branch network/services/ddnsto ddnsto
+github_partial_clone linkease nas-packages use_default_branch network/services/linkease linkease
 
 # Add OpenClash
 github_partial_clone vernesong OpenClash use_default_branch luci-app-openclash luci-app-openclash
