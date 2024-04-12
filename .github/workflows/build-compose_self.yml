@@ -194,7 +194,7 @@ jobs:
         fi
         ../scripts/preset-clash-core.sh amd64
         ../scripts/preset-terminal-tools.sh
-        if ["${{ inputs.compile_version }}" == "docker"]; then
+        if [ "${{ inputs.compile_version }}" == "docker" ]; then
             echo '
             CONFIG_DOCKER_CGROUP_OPTIONS=y
             CONFIG_DOCKER_NET_ENCRYPT=y
