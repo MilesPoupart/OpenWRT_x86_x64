@@ -168,9 +168,6 @@ rm -rf ../../customfeeds/packages/multimedia/aliyundrive-webdav
 github_partial_clone messense aliyundrive-webdav use_default_branch openwrt/aliyundrive-webdav aliyundrive-webdav
 github_partial_clone messense aliyundrive-webdav use_default_branch openwrt/luci-app-aliyundrive-webdav luci-app-aliyundrive-webdav
 
-# luci-app-daed-next
-git clone --depth=1 https://github.com/QiuSimons/luci-app-daed-next
-
 popd
 
 # Add Pandownload
