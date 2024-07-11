@@ -90,7 +90,8 @@ rm -rf ../../customfeeds/luci/applications/luci-app-mosdns
 git clone --depth=1 https://github.com/sbwml/luci-app-mosdns
 
 # Add luci-app-ssr-plus
-git clone --depth=1 https://github.com/fw876/helloworld
+# git clone --depth=1 https://github.com/fw876/helloworld
+git clone --depth=1 -b patch-1 https://github.com/MilesPoupart/helloworld
 
 # Add luci-app-passwall
 git clone --depth=1 https://github.com/xiaorouji/openwrt-passwall
