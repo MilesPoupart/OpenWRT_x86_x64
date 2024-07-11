@@ -206,8 +206,8 @@ sed -i "s/OpenWrt /MilesPoupart @ MilesWrt /g" package/lean/default-settings/fil
 # Test kernel 6.1
 # sed -i 's/6.1/5.15/g' target/linux/x86/Makefile
 
-rm -rf target/linux/x86/base-files/etc/board.d/02_network		
-cp -f $GITHUB_WORKSPACE/02_network target/linux/x86/base-files/etc/board.d/02_network
+rm -rf target/linux/x86/base-files/etc/board.d/02_network
+wget -P target/linux/x86/base-files/etc/board.d https://raw.githubusercontent.com/DHDAXCW/lede-rockchip/stable/target/linux/x86/base-files/etc/board.d/02_network
 
 rm package/base-files/files/etc/banner
 touch package/base-files/files/etc/banner
