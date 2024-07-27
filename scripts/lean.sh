@@ -89,6 +89,9 @@ rm -rf ../../customfeeds/packages/utils/v2dat
 rm -rf ../../customfeeds/luci/applications/luci-app-mosdns
 git clone --depth=1 https://github.com/sbwml/luci-app-mosdns
 
+# apppppppp
+# git clone --depth=1 https://github.com/DHDAXCW/dhdaxcw-app
+
 # Add luci-app-ssr-plus
 # git clone --depth=1 https://github.com/fw876/helloworld
 git clone --depth=1 -b patch-1 https://github.com/MilesPoupart/helloworld
@@ -193,6 +196,11 @@ pushd feeds/packages/libs
 rm -rf libssh
 github_partial_clone openwrt packages use_default_branch libs/libssh libssh
 popd
+
+# rm -rf nas-packages-luci/luci/luci-app-istorex
+# rm -rf package/feeds/packages/libmbim
+# rm -rf package/feeds/packages/lame
+# rm -rf package/feeds/packages/apk
 
 # Change default shell to zsh
 sed -i 's/\/bin\/ash/\/usr\/bin\/zsh/g' package/base-files/files/etc/passwd
