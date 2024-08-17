@@ -32,7 +32,8 @@ function github_partial_clone(){
 # Clone community packages to package/community
 
 rm -rf package/base-files/files/lib/preinit/80_mount_root
-wget -P package/base-files/files/lib/preinit https://raw.githubusercontent.com/DHDAXCW/lede-rockchip/stable/package/base-files/files/lib/preinit/80_mount_root 
+cp -f $GITHUB_WORKSPACE/80_mount_root package/base-files/files/lib/preinit/80_mount_root
+# wget -P package/base-files/files/lib/preinit https://raw.githubusercontent.com/DHDAXCW/lede-rockchip/stable/package/base-files/files/lib/preinit/80_mount_root 
 # rm -rf package/libs/libnl-tiny
 # rm -rf package/kernel/mac80211
 # rm -rf package/kernel/mt76
@@ -201,6 +202,7 @@ popd
 # rm -rf package/feeds/packages/libmbim
 # rm -rf package/feeds/packages/lame
 # rm -rf package/feeds/packages/apk
+# rm -rf package/feeds/packages/adguardhome
 
 # Change default shell to zsh
 sed -i 's/\/bin\/ash/\/usr\/bin\/zsh/g' package/base-files/files/etc/passwd
