@@ -6,7 +6,7 @@
 # Blog: https://p3terx.com
 #=================================================
 
-name: build-compose_self
+name: build-compose_self_loaclly
 
 on:
   repository_dispatch:
