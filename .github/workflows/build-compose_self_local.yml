@@ -210,8 +210,8 @@ jobs:
         cat dl/aliyundrive-webdav-v2.3.3.x86_64-unknown-linux-musl.tar.gz.sha256
         find dl -size -1024c -exec ls -l {} \;
         find dl -size -1024c -exec rm -f {} \;        
-        rm dl/aliyundrive-webdav-v2.3.3.x86_64-unknown-linux-musl.tar.gz
-        rm dl/aliyundrive-webdav-v2.3.3.x86_64-unknown-linux-musl.tar.gz.sha256
+        rm -f dl/aliyundrive-webdav-v2.3.3.x86_64-unknown-linux-musl.tar.gz
+        rm -f dl/aliyundrive-webdav-v2.3.3.x86_64-unknown-linux-musl.tar.gz.sha256
         wget https://github.com/messense/aliyundrive-webdav/releases/download/v2.3.3/aliyundrive-webdav-v2.3.3.x86_64-unknown-linux-musl.tar.gz dl/aliyundrive-webdav-v2.3.3.x86_64-unknown-linux-musl.tar.gz
         wget https://github.com/messense/aliyundrive-webdav/releases/download/v2.3.3/aliyundrive-webdav-v2.3.3.x86_64-unknown-linux-musl.tar.gz.sha256 dl/aliyundrive-webdav-v2.3.3.x86_64-unknown-linux-musl.tar.gz.sha256
   
