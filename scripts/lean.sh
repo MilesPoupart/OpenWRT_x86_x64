@@ -124,6 +124,10 @@ github_partial_clone linkease nas-packages use_default_branch multimedia/ffmpeg-
 rm -rf ../../customfeeds/luci/applications/luci-app-openclash
 github_partial_clone vernesong OpenClash use_default_branch luci-app-openclash luci-app-openclash
 
+# add wrtbwmon
+github_partial_clone brvphoenix luci-app-wrtbwmon use_default_branch luci-app-wrtbwmon luci-app-wrtbwmon
+github_partial_clone brvphoenix wrtbwmon use_default_branch wrtbwmon wrtbwmon
+
 # Add luci-app-poweroff
 git clone --depth=1 https://github.com/esirplayground/luci-app-poweroff
 
