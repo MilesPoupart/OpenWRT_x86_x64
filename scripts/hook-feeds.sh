@@ -1,68 +1,75 @@
 #!/bin/bash
+
 now_dir=$(pwd)
-clone_dir=${now_dir}"/../git_clone_temporary_space"
-if [ ! -d "$clone_dir" ]; then
-  mkdir "$clone_dir"
-fi
-function github_partial_clone(){
-    url_prefix="https://github.com/" author_name="$1" repository_name="$2" branch_name="$3" required_dir="$4" saved_dir="$5"
-    if [ "$branch_name" == "use_default_branch" ]; then
-        branch_option=""
-    else        
-        branch_option="-b "${branch_name}
+clone_dir="${now_dir}/../git_clone_temporary_space"
+mkdir -p "$clone_dir"
+
+function github_partial_clone() {
+    local author_name="$1"
+    local repository_name="$2"
+    local branch_name="$3"
+    local required_dir="$4"
+    local saved_dir="$5"
+
+    local url_prefix="https://github.com/"
+    local branch_option=""
+
+    if [ "$branch_name" != "use_default_branch" ]; then
+        branch_option="-b ${branch_name}"
     fi
-    if [ ! -d ${saved_dir} ]; then
-        mkdir -vp ${saved_dir}
+
+    mkdir -p "$saved_dir"
+
+    # Clone the repository only if it hasn't been cloned yet
+    if [ ! -d "${clone_dir}/${repository_name}" ]; then
+        git clone --depth=1 ${branch_option} "${url_prefix}${author_name}/${repository_name}.git" "${clone_dir}/${repository_name}"
     fi
-    if [ ! -d ${clone_dir}"/"${repository_name} ]; then
-        git clone --depth=1 ${branch_option} ${url_prefix}${author_name}"/"${repository_name}".git" ${clone_dir}"/"${repository_name}
-    fi
-    mv ${clone_dir}"/"${repository_name}"/"${required_dir}/* ${saved_dir}
-    rm -rf ${clone_dir}"/"${repository_name}
+
+    # Move required files and clean up
+    mv "${clone_dir}/${repository_name}/${required_dir}/"* "$saved_dir"
+    rm -rf "${clone_dir}/${repository_name}"
 }
 
 # Svn checkout packages from immortalwrt's repository
 pushd customfeeds
 
+# Function to clone and clean up
+function clone_and_cleanup() {
+    local dir_path="$1"
+    local author="$2"
+    local repo="$3"
+    local branch="$4"
+    local required="$5"
+    local saved="$6"
+
+    rm -rf "$dir_path"
+    github_partial_clone "$author" "$repo" "$branch" "$required" "$saved"
+}
+
 # Add luci-app-eqos
-rm -rf luci/applications/luci-app-eqos
-github_partial_clone immortalwrt luci use_default_branch applications/luci-app-eqos luci/applications/luci-app-eqos
+clone_and_cleanup "luci/applications/luci-app-eqos" "immortalwrt" "luci" "use_default_branch" "applications/luci-app-eqos" "luci/applications/luci-app-eqos"
 
 # Add luci-proto-modemmanager
-rm -rf luci/protocols/luci-proto-modemmanager
-github_partial_clone immortalwrt luci use_default_branch protocols/luci-proto-modemmanager luci/protocols/luci-proto-modemmanager
-
-# Add luci-app-gowebdav
-# github_partial_clone immortalwrt luci use_default_branch applications/luci-app-gowebdav luci/applications/luci-app-gowebdav
-# rm -rf packages/net/gowebdav
-# github_partial_clone immortalwrt packages use_default_branch net/gowebdav packages/net/gowebdav
+clone_and_cleanup "luci/protocols/luci-proto-modemmanager" "immortalwrt" "luci" "use_default_branch" "protocols/luci-proto-modemmanager" "luci/protocols/luci-proto-modemmanager"
 
 # Add dufs
-github_partial_clone immortalwrt luci use_default_branch applications/luci-app-dufs luci/applications/luci-app-dufs
-github_partial_clone immortalwrt packages use_default_branch net/dufs packages/net/dufs
+clone_and_cleanup "luci/applications/luci-app-dufs" "immortalwrt" "luci" "use_default_branch" "applications/luci-app-dufs" "luci/applications/luci-app-dufs"
+clone_and_cleanup "packages/net/dufs" "immortalwrt" "packages" "use_default_branch" "net/dufs" "packages/net/dufs"
 
 # Add tmate
 git clone --depth=1 https://github.com/immortalwrt/openwrt-tmate
 
 # Add gotop
-rm -rf packages/admin/gotop
-github_partial_clone immortalwrt packages openwrt-18.06 admin/gotop packages/admin/gotop
+clone_and_cleanup "packages/admin/gotop" "immortalwrt" "packages" "openwrt-18.06" "admin/gotop" "packages/admin/gotop"
 
 # Add minieap
-rm -rf packages/net/minieap
-github_partial_clone immortalwrt packages use_default_branch net/minieap packages/net/minieap
-
-# Replace smartdns
-# rm -rf packages/net/smartdns
-# github_partial_clone immortalwrt packages use_default_branch net/smartdns packages/net/smartdns
+clone_and_cleanup "packages/net/minieap" "immortalwrt" "packages" "use_default_branch" "net/minieap" "packages/net/minieap"
 
 # Replace watchcat with the official version
-rm -rf packages/utils/watchcat
-github_partial_clone openwrt packages use_default_branch utils/watchcat packages/utils/watchcat
+clone_and_cleanup "packages/utils/watchcat" "openwrt" "packages" "use_default_branch" "utils/watchcat" "packages/utils/watchcat"
 
 # Replace adguardhome
-rm -rf packages/net/adguardhome
-github_partial_clone immortalwrt packages use_default_branch net/adguardhome packages/net/adguardhome
+clone_and_cleanup "packages/net/adguardhome" "immortalwrt" "packages" "use_default_branch" "net/adguardhome" "packages/net/adguardhome"
 
 popd
 
@@ -70,9 +77,11 @@ popd
 pushd customfeeds/packages
 export packages_feed="$(pwd)"
 popd
+
 pushd customfeeds/luci
 export luci_feed="$(pwd)"
 popd
+
 sed -i '/src-git packages/d' feeds.conf.default
 echo "src-link packages $packages_feed" >> feeds.conf.default
 sed -i '/src-git luci/d' feeds.conf.default
