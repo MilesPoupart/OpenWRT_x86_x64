@@ -49,6 +49,9 @@ function clone_and_cleanup() {
 # Add luci-app-eqos
 clone_and_cleanup "luci/applications/luci-app-eqos" "immortalwrt" "luci" "use_default_branch" "applications/luci-app-eqos" "luci/applications/luci-app-eqos"
 
+# Add luci-app-softethervpn
+clone_and_cleanup "luci/applications/luci-app-softethervpn" "immortalwrt" "luci" "use_default_branch" "applications/luci-app-softethervpn" "luci/applications/luci-app-softethervpn"
+
 # Add luci-proto-modemmanager
 clone_and_cleanup "luci/protocols/luci-proto-modemmanager" "immortalwrt" "luci" "use_default_branch" "protocols/luci-proto-modemmanager" "luci/protocols/luci-proto-modemmanager"
 

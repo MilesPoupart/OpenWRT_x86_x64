@@ -57,6 +57,7 @@ rm -rf ../../customfeeds/luci/applications/luci-app-socat
 rm -rf ../../customfeeds/luci/applications/luci-app-ipsec-server
 rm -rf openwrt-package/verysync
 rm -rf openwrt-package/luci-app-verysync
+rm -rf openwrt-package/luci-app-softethervpn
 
 # Add luci-app-netdata
 rm -rf ../../customfeeds/luci/applications/luci-app-netdata
