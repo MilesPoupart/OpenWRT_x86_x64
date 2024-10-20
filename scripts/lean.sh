@@ -94,6 +94,31 @@ git clone --depth=1 https://github.com/fw876/helloworld
 # Add luci-app-passwall
 rm -rf ../../customfeeds/luci/applications/luci-app-passwall
 rm -rf ../../customfeeds/luci/applications/luci-app-passwall2
+rm -rf ../../customfeeds/packages/net/brook
+rm -rf ../../customfeeds/packages/net/chinadns-ng
+rm -rf ../../customfeeds/packages/net/dns2socks
+rm -rf ../../customfeeds/packages/net/dns2tcp
+rm -rf ../../customfeeds/packages/net/gn
+rm -rf ../../customfeeds/packages/net/hysteria
+rm -rf ../../customfeeds/packages/net/ipt2socks
+rm -rf ../../customfeeds/packages/net/microsocks
+rm -rf ../../customfeeds/packages/net/naiveproxy
+rm -rf ../../customfeeds/packages/net/pdnsd-alt
+rm -rf ../../customfeeds/packages/net/shadowsocks-rust
+rm -rf ../../customfeeds/packages/net/shadowsocksr-libev
+rm -rf ../../customfeeds/packages/net/simple-obfs
+rm -rf ../../customfeeds/packages/net/sing-box
+rm -rf ../../customfeeds/packages/net/ssocks
+rm -rf ../../customfeeds/packages/net/tcping
+rm -rf ../../customfeeds/packages/net/trojan-go
+rm -rf ../../customfeeds/packages/net/trojan-plus
+rm -rf ../../customfeeds/packages/net/trojan
+rm -rf ../../customfeeds/packages/net/tuic-client
+rm -rf ../../customfeeds/packages/net/v2ray-core
+rm -rf ../../customfeeds/packages/net/v2ray-geodata
+rm -rf ../../customfeeds/packages/net/v2ray-plugin
+rm -rf ../../customfeeds/packages/net/xray-core
+rm -rf ../../customfeeds/packages/net/xray-plugin
 git clone --depth=1 https://github.com/xiaorouji/openwrt-passwall
 git clone --depth=1 https://github.com/xiaorouji/openwrt-passwall2
 git clone --depth=1 https://github.com/xiaorouji/openwrt-passwall-packages
