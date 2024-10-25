@@ -74,6 +74,10 @@ clone_and_cleanup "packages/utils/watchcat" "openwrt" "packages" "use_default_br
 # Replace adguardhome
 clone_and_cleanup "packages/net/adguardhome" "immortalwrt" "packages" "use_default_branch" "net/adguardhome" "packages/net/adguardhome"
 
+# replace luci-app-smartdns
+rm -rf luci/applications/luci-app-smartdns
+git clone https://github.com/pymumu/luci-app-smartdns luci/applications/luci-app-smartdns
+
 popd
 
 # Set to local feeds

@@ -182,8 +182,8 @@ rm -rf ../../customfeeds/luci/applications/luci-app-alist
 git clone --depth=1 https://github.com/sbwml/luci-app-alist
 
 # Add luci-app-smartdns & smartdns
-rm -rf ../../customfeeds/luci/applications/luci-app-smartdns
-git clone --depth=1 https://github.com/pymumu/luci-app-smartdns
+# rm -rf ../../customfeeds/luci/applications/luci-app-smartdns
+# git clone --depth=1 https://github.com/pymumu/luci-app-smartdns
 
 # Add luci-app-wolplus
 rm -rf ../../customfeeds/luci/applications/luci-app-wolplus
