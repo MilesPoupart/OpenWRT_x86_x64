@@ -226,8 +226,9 @@ sed -i 's/\/bin\/ash/\/usr\/bin\/zsh/g' package/base-files/files/etc/passwd
 
 # Modify default IP
 sed -i 's/192.168.1.1/192.168.4.1/g' package/base-files/files/bin/config_generate
+sed -i 's/192.168.1.1/192.168.4.1/g' package/base-files/luci2/bin/config_generate
 sed -i '/uci commit system/i\uci set system.@system[0].hostname='MilesWrt'' package/lean/default-settings/files/zzz-default-settings
-sed -i "s/OpenWrt /MilesPoupart @ MilesWrt /g" package/lean/default-settings/files/zzz-default-settings
+sed -i "s/LEDE /MilesPoupart @ MilesWrt /g" package/lean/default-settings/files/zzz-default-settings
 
 # Clean up network configuration
 rm -rf target/linux/x86/base-files/etc/board.d/02_network
