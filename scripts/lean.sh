@@ -178,6 +178,7 @@ rm -rf ../../customfeeds/luci/applications/luci-app-lucky
 git clone --depth=1 https://github.com/gdy666/luci-app-lucky
 
 # Add alist
+rm -rf ../../customfeeds/packages/net/alist
 rm -rf ../../customfeeds/luci/applications/luci-app-alist
 git clone --depth=1 https://github.com/sbwml/luci-app-alist
 
