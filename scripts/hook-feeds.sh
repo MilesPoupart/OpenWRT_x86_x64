@@ -67,6 +67,7 @@ clone_and_cleanup "packages/admin/gotop" "immortalwrt" "packages" "openwrt-18.06
 
 # Add minieap
 clone_and_cleanup "packages/net/minieap" "immortalwrt" "packages" "use_default_branch" "net/minieap" "packages/net/minieap"
+clone_and_cleanup "luci/applications/luci-app-minieap" "immortalwrt" "luci" "use_default_branch" "applications/luci-app-minieap" "luci/applications/luci-app-minieap"
 
 # Replace watchcat with the official version
 clone_and_cleanup "packages/utils/watchcat" "openwrt" "packages" "use_default_branch" "utils/watchcat" "packages/utils/watchcat"
