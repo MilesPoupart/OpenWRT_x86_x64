@@ -51,6 +51,8 @@ github_partial_clone immortalwrt packages openwrt-18.06 admin/gotop packages/adm
 # Add minieap
 rm -rf packages/net/minieap
 github_partial_clone immortalwrt packages use_default_branch net/minieap packages/net/minieap
+rm -rf luci/applications/luci-app-minieap
+github_partial_clone immortalwrt luci use_default_branch applications/luci-app-minieap luci/applications/luci-app-minieap
 
 # Replace smartdns
 # rm -rf packages/net/smartdns
