@@ -88,6 +88,52 @@ popd
 
 pushd customfeeds/luci
 export luci_feed="$(pwd)"
+
+BASE_DIR="$(pwd)"
+
+# 使用 find 查找所有以 /po/zh-cn 结尾的目录
+find "$BASE_DIR" -type d -path "*/po/zh-cn" | while IFS= read -r zh_cn_dir; do
+    # 获取 po 目录的路径
+    po_dir=$(dirname "$zh_cn_dir")
+    
+    # 定义 zh_Hans 目录的路径
+    zh_Hans_dir="zh_Hans"
+    
+    echo "处理目录: $po_dir"
+
+    # 使用 pushd 进入 po 目录
+    pushd "$po_dir" > /dev/null
+    if [ $? -ne 0 ]; then
+        echo "错误: 无法进入目录: $po_dir"
+        continue
+    fi
+
+    # 检查 zh_Hans 是否已经存在（包括文件、目录或链接）
+    if [ ! -e "$zh_Hans_dir" ]; then
+        # 创建指向 zh-cn 的软链接 zh_Hans
+        ln -s "zh-cn" "$zh_Hans_dir"
+        if [ $? -eq 0 ]; then
+            echo "成功创建软链接: $po_dir/$zh_Hans_dir -> zh-cn"
+        else
+            echo "错误: 无法创建软链接: $po_dir/$zh_Hans_dir"
+        fi
+    else
+        echo "已存在: $po_dir/$zh_Hans_dir，不做任何操作。"
+    fi
+
+    # 使用 popd 返回原工作目录
+    popd > /dev/null
+    if [ $? -ne 0 ]; then
+        echo "错误: 无法返回到原工作目录。"
+        exit 1
+    fi
+
+    echo "完成处理目录: $po_dir"
+    echo "----------------------------------------"
+done
+
+echo "所有目录处理完毕。"
+
 popd
 
 sed -i '/src-git packages/d' feeds.conf.default
