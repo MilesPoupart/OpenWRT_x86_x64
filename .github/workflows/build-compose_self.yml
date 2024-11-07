@@ -235,7 +235,7 @@ jobs:
         rm -f dl/qbittorrent-nox
         wget -P dl https://github.com/messense/aliyundrive-webdav/releases/download/v2.3.3/aliyundrive-webdav-v2.3.3.x86_64-unknown-linux-musl.tar.gz 
         wget -P dl https://github.com/messense/aliyundrive-webdav/releases/download/v2.3.3/aliyundrive-webdav-v2.3.3.x86_64-unknown-linux-musl.tar.gz.sha256
-        wget -P dl https://github.com/userdocs/qbittorrent-nox-static/releases/download/release-4.6.7_v2.0.10/x86_64-qbittorrent-nox
+        wget -P dl https://github.com/userdocs/qbittorrent-nox-static/releases/download/release-5.0.1_v2.0.10/x86_64-qbittorrent-nox
         mv dl/x86_64-qbittorrent-nox dl/qbittorrent-nox
   
     - name: Comporession
