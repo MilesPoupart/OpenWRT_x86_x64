@@ -58,6 +58,7 @@ rm -rf ../../customfeeds/luci/applications/luci-app-ipsec-server
 rm -rf openwrt-package/verysync
 rm -rf openwrt-package/luci-app-verysync
 rm -rf openwrt-package/luci-app-softethervpn
+rm -rf openwrt-package/luci-app-ramfree
 
 # Add luci-app-netdata
 rm -rf ../../customfeeds/luci/applications/luci-app-netdata
@@ -182,6 +183,17 @@ rm -rf ../../customfeeds/packages/net/alist
 rm -rf ../../customfeeds/luci/applications/luci-app-alist
 git clone --depth=1 https://github.com/sbwml/luci-app-alist
 
+# qbittorrent
+rm -rf ../../customfeeds/packages/net/qBittorrent
+rm -rf ../../customfeeds/packages/libs/rblibtorrent
+rm -rf ../../customfeeds/luci/applications/luci-app-qbittorrent
+git clone --depth=1 https://github.com/sbwml/luci-app-qbittorrent
+
+# ram free
+git clone --depth=1 https://github.com/sbwml/luci-app-ramfree
+
+# easytier
+git clone --depth=1 https://github.com/EasyTier/luci-app-easytier.git
 # Add luci-app-smartdns & smartdns
 # rm -rf ../../customfeeds/luci/applications/luci-app-smartdns
 # git clone --depth=1 https://github.com/pymumu/luci-app-smartdns
