@@ -1,0 +1,45 @@
+#!/bin/sh
+
+logger "开始在 lib/preinit 中扩展根文件系统分区..."
+
+# 检查是否已经扩展过
+if [ -f /tmp/.rootfs_resized ]; then
+    logger "根文件系统已扩展，跳过。"
+    exit 0
+fi
+
+# 获取根分区所在的设备（例如 /dev/sda1）
+ROOT_DEV=$(findmnt / -o SOURCE -n)
+DISK_DEV=$(echo "$ROOT_DEV" | sed 's/[0-9]*$//')
+
+logger "根分区设备: $ROOT_DEV"
+logger "磁盘设备: $DISK_DEV"
+
+# 计算新的分区大小，留出20MB空间
+DISK_SIZE=$(block info "$DISK_DEV" size)
+NEW_SIZE=$(expr "$DISK_SIZE" - 20480)  # 20MB = 20480 KB
+
+logger "调整分区 $DISK_DEV 至 $NEW_SIZE KB..."
+
+# 调整分区大小
+echo ",$NEW_SIZE" | sfdisk --no-reread -uS "$DISK_DEV"
+if [ $? -ne 0 ]; then
+    logger "分区调整失败！"
+    exit 1
+fi
+
+# 重新读取分区表
+partprobe "$DISK_DEV"
+sleep 5
+
+# 扩展文件系统（假设使用的是 ext4）
+logger "扩展文件系统 $ROOT_DEV..."
+resize2fs "$ROOT_DEV"
+if [ $? -eq 0 ]; then
+    # 标记已完成扩展，避免重复操作
+    touch /tmp/.rootfs_resized
+    logger "根文件系统分区扩展完成。"
+else
+    logger "文件系统扩展失败！"
+    exit 1
+fi
