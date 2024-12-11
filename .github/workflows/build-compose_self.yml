@@ -428,7 +428,7 @@ jobs:
         rm -rf openwrt-x86-64-generic-ext4-rootfs.img.gz
         rm -rf openwrt-x86-64-generic-squashfs-combined-efi.vmdk
         rm -rf openwrt-x86-64-generic-ext4-combined-efi.vmdk.gz
-        rm -rf openwrt-x86-64-generic.manifest
+        mv openwrt-x86-64-generic.manifest ${{ inputs.compile_version }}-x86-64-generic.manifest
         mv config.buildinfo ${{ inputs.compile_version }}-config.buildinfo
         mv openwrt-x86-64-generic-squashfs-combined-efi.img.gz ${{ inputs.compile_version }}-x86-64-squashfs-efi.img.gz
         mv openwrt-x86-64-generic-ext4-combined-efi.img.gz ${{ inputs.compile_version }}-x86-64-ext4-efi.img.gz
