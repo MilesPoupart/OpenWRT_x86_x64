@@ -172,7 +172,6 @@ jobs:
         mkdir customfeeds
         git clone --depth=1 https://github.com/MilesPoupart/packages customfeeds/packages
         git clone --depth=1 -b ${{ inputs.luci_version }} https://github.com/MilesPoupart/luci customfeeds/luci
-        chmod +x ../79_resize_rootfs
         chmod +x ../scripts/*.sh
         ../scripts/hook-feeds.sh
 
