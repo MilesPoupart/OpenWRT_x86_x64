@@ -179,6 +179,9 @@ rm -rf ../../customfeeds/packages/multimedia/aliyundrive-webdav
 github_partial_clone messense aliyundrive-webdav use_default_branch openwrt/aliyundrive-webdav aliyundrive-webdav
 github_partial_clone messense aliyundrive-webdav use_default_branch openwrt/luci-app-aliyundrive-webdav luci-app-aliyundrive-webdav
 
+# easytier
+git clone --depth=1 https://github.com/EasyTier/luci-app-easytier.git
+
 popd
 
 # Add Pandownload
