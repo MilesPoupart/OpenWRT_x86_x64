@@ -1,51 +1,160 @@
 #!/bin/sh
 
-# 文件路径标记
-PT_RESIZE_MARK=/etc/rootpt-resize
-FS_RESIZE_MARK=/etc/rootfs-resize
+# 文件路径: /lib/preinit/resize_rootfs.sh
+# 设置为可执行: chmod +x /lib/preinit/resize_rootfs.sh
 
-# 检查是否已完成分区调整和文件系统扩展
-if [ -f "$PT_RESIZE_MARK" ] && [ -f "$FS_RESIZE_MARK" ]; then
+# 定义标记文件路径，存储在 /etc 目录下
+PARTITION_RESIZED_FLAG="/etc/.partition_resized"
+FILESYSTEM_RESIZED_FLAG="/etc/.filesystem_resized"
+
+# 获取根分区设备，例如 /dev/sda1、/dev/nvme0n1p1 或 /dev/mmcblk0p2
+ROOT_DEV=$(df / | tail -1 | awk '{print $1}')
+
+# 提取磁盘设备，例如 /dev/sda、/dev/nvme0n1 或 /dev/mmcblk0
+get_base_disk() {
+    local dev="$1"
+    if echo "$dev" | grep -q '^/dev/nvme'; then
+        # 对于 NVMe 设备，例如 /dev/nvme0n1p1 → /dev/nvme0n1
+        echo "$dev" | sed -E 's/p[0-9]+$//'
+    elif echo "$dev" | grep -q '^/dev/mmcblk'; then
+        # 对于 MMC 设备，例如 /dev/mmcblk0p2 → /dev/mmcblk0
+        echo "$dev" | sed -E 's/p[0-9]+$//'
+    else
+        # 对于标准设备，例如 /dev/sda1 → /dev/sda
+        echo "$dev" | sed 's/[0-9]*$//'
+    fi
+}
+
+DISK=$(get_base_disk "$ROOT_DEV")
+
+# 确认 DISK 路径存在
+if [ ! -b "$DISK" ]; then
+    echo "磁盘设备 $DISK 不存在。"
+    exit 1
+fi
+
+# 获取分区号
+get_partition_num() {
+    local dev="$1"
+    if echo "$dev" | grep -q '^/dev/nvme'; then
+        echo "$dev" | grep -o 'p[0-9]\+$' | sed 's/p//'
+    elif echo "$dev" | grep -q '^/dev/mmcblk'; then
+        echo "$dev" | grep -o 'p[0-9]\+$' | sed 's/p//'
+    else
+        echo "$dev" | grep -o '[0-9]\+$'
+    fi
+}
+
+PARTITION_NUM=$(get_partition_num "$ROOT_DEV")
+
+# 定义当前分区路径，例如 /dev/sda1、/dev/nvme0n1p1 或 /dev/mmcblk0p2
+get_partition_path() {
+    local disk="$1"
+    local num="$2"
+    if echo "$disk" | grep -q '^/dev/nvme'; then
+        echo "${disk}p${num}"
+    elif echo "$disk" | grep -q '^/dev/mmcblk'; then
+        echo "${disk}p${num}"
+    else
+        echo "${disk}${num}"
+    fi
+}
+
+PARTITION_PATH=$(get_partition_path "$DISK" "$PARTITION_NUM")
+
+# 如果文件系统已经调整过，退出
+if [ -f "$FILESYSTEM_RESIZED_FLAG" ]; then
+    echo "文件系统已扩展过。"
     exit 0
 fi
 
-# 获取根分区信息
-ROOT_BLK=$(readlink -f /sys/dev/block/$(awk '$9=="/dev/root"{print $3}' /proc/self/mountinfo))
-ROOT_DISK="/dev/$(basename "${ROOT_BLK%/*}")"
-ROOT_PART="$(echo "${ROOT_BLK}" | grep -o '[0-9]*$')"
+# 检查是否已经调整过分区
+if [ -f "$PARTITION_RESIZED_FLAG" ]; then
+    echo "正在扩展文件系统..."
+    # 检查文件系统类型，这里假设使用 ext4
+    if mount | grep "$PARTITION_PATH" | grep -q 'ext4'; then
+        resize2fs "$PARTITION_PATH"
+        if [ $? -eq 0 ]; then
+            echo "文件系统扩展成功。"
+            touch "$FILESYSTEM_RESIZED_FLAG"
+        else
+            echo "文件系统扩展失败。"
+        fi
+    else
+        echo "不支持的文件系统类型。跳过扩展。"
+    fi
+    exit 0
+fi
 
-# 调整分区大小，保留20MB空间
-RESERVED_MB=20
-PART_SIZE=$(block info "${ROOT_DISK}" size)
-NEW_SIZE=$(expr "$PART_SIZE" - $(expr "$RESERVED_MB" \* 1024))
-
-echo "调整分区 ${ROOT_DISK} 的 ${ROOT_PART} 号分区大小至 ${NEW_SIZE} KB"
-
-# 使用 parted 调整分区大小
-parted -s "${ROOT_DISK}" resizepart "${ROOT_PART}" "${NEW_SIZE}" || {
-    logger "分区调整失败！"
+# 计算磁盘的总扇区数
+DISK_SIZE_SECT=$(cat /sys/block/$(basename "$DISK")/size)
+if [ -z "$DISK_SIZE_SECT" ]; then
+    echo "无法获取磁盘 $DISK 的扇区数。"
     exit 1
+fi
+
+# 获取每个扇区的大小（通常为512字节）
+SECTOR_SIZE=$(cat /sys/block/$(basename "$DISK")/queue/hw_sector_size)
+if [ -z "$SECTOR_SIZE" ]; then
+    echo "无法获取磁盘 $DISK 的扇区大小。"
+    exit 1
+fi
+
+# 计算磁盘总大小（MB）
+DISK_SIZE_MB=$((DISK_SIZE_SECT * SECTOR_SIZE / 1024 / 1024))
+
+# 计算新的根分区大小（总大小减去20MB）
+NEW_SIZE_MB=$((DISK_SIZE_MB - 20))
+
+echo "磁盘大小: $DISK_SIZE_MB MB"
+echo "新的根分区大小: $NEW_SIZE_MB MB"
+
+# 获取当前分区的起始扇区
+get_start_sector() {
+    fdisk -l "$DISK" | grep "^$DISK" | grep " $PARTITION_NUM " | awk '{print $2}'
 }
 
-# 重新读取分区表
-partprobe "${ROOT_DISK}"
-sleep 5
-
-# 扩展文件系统
-if [ ! -f "$PT_RESIZE_MARK" ]; then
-    touch "$PT_RESIZE_MARK"
-    logger "分区调整完成，准备扩展文件系统。"
-    reboot
+START_SECTOR=$(get_start_sector)
+if [ -z "$START_SECTOR" ]; then
+    echo "无法获取分区 $PARTITION_PATH 的起始扇区。"
+    exit 1
 fi
 
-if [ ! -f "$FS_RESIZE_MARK" ]; then
-    # 扩展文件系统（假设使用的是 ext4）
-    resize2fs "$ROOT_BLK" || {
-        logger "文件系统扩展失败！"
-        exit 1
-    }
+echo "分区 $PARTITION_PATH 的起始扇区: $START_SECTOR"
 
-    touch "$FS_RESIZE_MARK"
-    logger "文件系统扩展完成。"
-    reboot
+# 使用 sfdisk 修改分区表
+# 创建新的分区方案，调整根分区大小
+echo "正在使用 sfdisk 修改分区表..."
+
+# 备份当前分区表
+sfdisk -d "$DISK" > /etc/"$(basename "$DISK")_sfdisk_backup"
+
+# 生成新的分区表
+(
+    echo "$PARTITION_NUM"     # 分区号
+    echo "$START_SECTOR"     # 起始扇区
+    echo "+${NEW_SIZE_MB}M"   # 分区大小
+    echo "";                  # 其他分区（保留）
+) | sfdisk "$DISK"
+
+if [ $? -ne 0 ]; then
+    echo "修改分区表失败。"
+    # 恢复备份
+    sfdisk "$DISK" < /etc/"$(basename "$DISK")_sfdisk_backup"
+    echo "已恢复原始分区表。"
+    exit 1
 fi
+
+# 同步磁盘更改
+sync
+
+# 标记分区已调整，待下一次启动调整文件系统
+touch "$PARTITION_RESIZED_FLAG"
+
+echo "分区表已修改。系统将重启以应用更改。"
+# 重启系统以应用新的分区表
+reboot
+
+# 在系统重启后，扩展文件系统
+# 脚本将在重启后检测到 $PARTITION_RESIZED_FLAG 并执行扩展
+exit 0
