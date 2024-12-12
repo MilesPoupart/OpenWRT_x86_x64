@@ -1,0 +1,51 @@
+#!/bin/sh
+
+# 文件路径标记
+PT_RESIZE_MARK=/etc/rootpt-resize
+FS_RESIZE_MARK=/etc/rootfs-resize
+
+# 检查是否已完成分区调整和文件系统扩展
+if [ -f "$PT_RESIZE_MARK" ] && [ -f "$FS_RESIZE_MARK" ]; then
+    exit 0
+fi
+
+# 获取根分区信息
+ROOT_BLK=$(readlink -f /sys/dev/block/$(awk '$9=="/dev/root"{print $3}' /proc/self/mountinfo))
+ROOT_DISK="/dev/$(basename "${ROOT_BLK%/*}")"
+ROOT_PART="$(echo "${ROOT_BLK}" | grep -o '[0-9]*$')"
+
+# 调整分区大小，保留20MB空间
+RESERVED_MB=20
+PART_SIZE=$(block info "${ROOT_DISK}" size)
+NEW_SIZE=$(expr "$PART_SIZE" - $(expr "$RESERVED_MB" \* 1024))
+
+echo "调整分区 ${ROOT_DISK} 的 ${ROOT_PART} 号分区大小至 ${NEW_SIZE} KB"
+
+# 使用 parted 调整分区大小
+parted -s "${ROOT_DISK}" resizepart "${ROOT_PART}" "${NEW_SIZE}" || {
+    logger "分区调整失败！"
+    exit 1
+}
+
+# 重新读取分区表
+partprobe "${ROOT_DISK}"
+sleep 5
+
+# 扩展文件系统
+if [ ! -f "$PT_RESIZE_MARK" ]; then
+    touch "$PT_RESIZE_MARK"
+    logger "分区调整完成，准备扩展文件系统。"
+    reboot
+fi
+
+if [ ! -f "$FS_RESIZE_MARK" ]; then
+    # 扩展文件系统（假设使用的是 ext4）
+    resize2fs "$ROOT_BLK" || {
+        logger "文件系统扩展失败！"
+        exit 1
+    }
+
+    touch "$FS_RESIZE_MARK"
+    logger "文件系统扩展完成。"
+    reboot
+fi

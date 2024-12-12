@@ -38,6 +38,8 @@ function github_partial_clone() {
 # Clone community packages to package/community
 rm -rf package/base-files/files/lib/preinit/80_mount_root
 cp -f "$GITHUB_WORKSPACE/80_mount_root" package/base-files/files/lib/preinit/80_mount_root
+chmod +x "$GITHUB_WORKSPACE/70_resize_rootfs"
+cp -f "$GITHUB_WORKSPACE/70_resize_rootfs" package/base-files/files/lib/preinit/70_resize_rootfs
 
 # Gloang
 rm -rf feeds/packages/lang/golang
