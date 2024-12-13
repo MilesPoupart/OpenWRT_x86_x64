@@ -1,39 +1,44 @@
 #!/bin/sh
 
-# 文件路径: /lib/preinit/resize_rootfs.sh
-# 设置为可执行: chmod +x /lib/preinit/resize_rootfs.sh
+# File path: /lib/preinit/resize_rootfs.sh
+# Make executable: chmod +x /lib/preinit/resize_rootfs.sh
 
-# 定义标记文件路径，存储在 /etc 目录下
+# Define paths for flag files stored in /etc
 PARTITION_RESIZED_FLAG="/etc/.partition_resized"
 FILESYSTEM_RESIZED_FLAG="/etc/.filesystem_resized"
 
-# 获取根分区设备，例如 /dev/sda1、/dev/nvme0n1p1 或 /dev/mmcblk0p2
+# Function to log messages to the system log
+log() {
+    logger -t resize_rootfs "$1"
+}
+
+# Get the root partition device, e.g., /dev/sda1, /dev/nvme0n1p1, /dev/mmcblk0p2
 ROOT_DEV=$(df / | tail -1 | awk '{print $1}')
 
-# 提取磁盘设备，例如 /dev/sda、/dev/nvme0n1 或 /dev/mmcblk0
+# Function to extract the base disk from the root partition device
 get_base_disk() {
     local dev="$1"
     if echo "$dev" | grep -q '^/dev/nvme'; then
-        # 对于 NVMe 设备，例如 /dev/nvme0n1p1 → /dev/nvme0n1
+        # For NVMe devices, e.g., /dev/nvme0n1p1 → /dev/nvme0n1
         echo "$dev" | sed -E 's/p[0-9]+$//'
     elif echo "$dev" | grep -q '^/dev/mmcblk'; then
-        # 对于 MMC 设备，例如 /dev/mmcblk0p2 → /dev/mmcblk0
+        # For MMC devices, e.g., /dev/mmcblk0p2 → /dev/mmcblk0
         echo "$dev" | sed -E 's/p[0-9]+$//'
     else
-        # 对于标准设备，例如 /dev/sda1 → /dev/sda
+        # For standard devices, e.g., /dev/sda1 → /dev/sda
         echo "$dev" | sed 's/[0-9]*$//'
     fi
 }
 
 DISK=$(get_base_disk "$ROOT_DEV")
 
-# 确认 DISK 路径存在
+# Confirm the DISK path exists
 if [ ! -b "$DISK" ]; then
-    echo "磁盘设备 $DISK 不存在。"
+    log "Disk device $DISK does not exist."
     exit 1
 fi
 
-# 获取分区号
+# Function to get the partition number from the root device
 get_partition_num() {
     local dev="$1"
     if echo "$dev" | grep -q '^/dev/nvme'; then
@@ -47,7 +52,7 @@ get_partition_num() {
 
 PARTITION_NUM=$(get_partition_num "$ROOT_DEV")
 
-# 定义当前分区路径，例如 /dev/sda1、/dev/nvme0n1p1 或 /dev/mmcblk0p2
+# Function to construct the full partition path
 get_partition_path() {
     local disk="$1"
     local num="$2"
@@ -62,99 +67,110 @@ get_partition_path() {
 
 PARTITION_PATH=$(get_partition_path "$DISK" "$PARTITION_NUM")
 
-# 如果文件系统已经调整过，退出
+# If the filesystem has already been resized, exit
 if [ -f "$FILESYSTEM_RESIZED_FLAG" ]; then
-    echo "文件系统已扩展过。"
+    log "Filesystem has already been resized."
     exit 0
 fi
 
-# 检查是否已经调整过分区
+# If the partition has already been resized, proceed to resize the filesystem
 if [ -f "$PARTITION_RESIZED_FLAG" ]; then
-    echo "正在扩展文件系统..."
-    # 检查文件系统类型，这里假设使用 ext4
+    log "Resizing filesystem..."
+    # Check if the filesystem type is ext4
     if mount | grep "$PARTITION_PATH" | grep -q 'ext4'; then
         resize2fs "$PARTITION_PATH"
         if [ $? -eq 0 ]; then
-            echo "文件系统扩展成功。"
+            log "Filesystem resized successfully."
             touch "$FILESYSTEM_RESIZED_FLAG"
         else
-            echo "文件系统扩展失败。"
+            log "Failed to resize filesystem."
         fi
     else
-        echo "不支持的文件系统类型。跳过扩展。"
+        log "Unsupported filesystem type. Skipping resize."
     fi
     exit 0
 fi
 
-# 计算磁盘的总扇区数
+# Get the total number of sectors on the disk
 DISK_SIZE_SECT=$(cat /sys/block/$(basename "$DISK")/size)
 if [ -z "$DISK_SIZE_SECT" ]; then
-    echo "无法获取磁盘 $DISK 的扇区数。"
+    log "Unable to get sector count for disk $DISK."
     exit 1
 fi
 
-# 获取每个扇区的大小（通常为512字节）
+# Get the size of each sector (usually 512 bytes)
 SECTOR_SIZE=$(cat /sys/block/$(basename "$DISK")/queue/hw_sector_size)
 if [ -z "$SECTOR_SIZE" ]; then
-    echo "无法获取磁盘 $DISK 的扇区大小。"
+    log "Unable to get sector size for disk $DISK."
     exit 1
 fi
 
-# 计算磁盘总大小（MB）
-DISK_SIZE_MB=$((DISK_SIZE_SECT * SECTOR_SIZE / 1024 / 1024))
+# Calculate the number of sectors corresponding to 10MB
+SECTORS_10MB=$((10 * 1024 * 1024 / SECTOR_SIZE))
 
-# 计算新的根分区大小（总大小减去20MB）
-NEW_SIZE_MB=$((DISK_SIZE_MB - 20))
+# Calculate the new end sector (total sectors - sectors for 10MB)
+NEW_END_SECT=$((DISK_SIZE_SECT - SECTORS_10MB))
 
-echo "磁盘大小: $DISK_SIZE_MB MB"
-echo "新的根分区大小: $NEW_SIZE_MB MB"
+log "Total disk sectors: $DISK_SIZE_SECT"
+log "Sector size: $SECTOR_SIZE bytes"
+log "Reserving last 10MB: $SECTORS_10MB sectors"
+log "New end sector for partition $PARTITION_PATH: $NEW_END_SECT"
 
-# 获取当前分区的起始扇区
+# Function to get the starting sector of the current partition
 get_start_sector() {
-    fdisk -l "$DISK" | grep "^$DISK" | grep " $PARTITION_NUM " | awk '{print $2}'
+    fdisk -l "$DISK" 2>/dev/null | grep "^$PARTITION_PATH " | awk '{print $2}'
 }
 
 START_SECTOR=$(get_start_sector)
 if [ -z "$START_SECTOR" ]; then
-    echo "无法获取分区 $PARTITION_PATH 的起始扇区。"
+    log "Unable to get start sector for partition $PARTITION_PATH."
     exit 1
 fi
 
-echo "分区 $PARTITION_PATH 的起始扇区: $START_SECTOR"
+log "Partition $PARTITION_PATH starts at sector: $START_SECTOR"
 
-# 使用 sfdisk 修改分区表
-# 创建新的分区方案，调整根分区大小
-echo "正在使用 sfdisk 修改分区表..."
+# Backup the current partition table
+sfdisk -d "$DISK" > "/etc/$(basename "$DISK")_sfdisk_backup"
+if [ $? -ne 0 ]; then
+    log "Failed to backup the partition table of $DISK."
+    exit 1
+fi
 
-# 备份当前分区表
-sfdisk -d "$DISK" > /etc/"$(basename "$DISK")_sfdisk_backup"
+log "Backing up current partition table."
 
-# 生成新的分区表
+# Modify the partition table using sfdisk
+log "Modifying the partition table using sfdisk..."
+
+# Use sfdisk to delete the existing partition and recreate it with the new end sector
 (
-    echo "$PARTITION_NUM"     # 分区号
-    echo "$START_SECTOR"     # 起始扇区
-    echo "+${NEW_SIZE_MB}M"   # 分区大小
-    echo "";                  # 其他分区（保留）
-) | sfdisk "$DISK"
+    echo "d"
+    echo "$PARTITION_NUM"
+    echo "n"
+    echo "$PARTITION_NUM"
+    echo "$START_SECTOR"
+    echo "$NEW_END_SECT"
+    echo "w"
+) | sfdisk "$DISK" >/dev/null 2>&1
 
 if [ $? -ne 0 ]; then
-    echo "修改分区表失败。"
-    # 恢复备份
-    sfdisk "$DISK" < /etc/"$(basename "$DISK")_sfdisk_backup"
-    echo "已恢复原始分区表。"
+    log "Failed to modify the partition table. Restoring from backup."
+    sfdisk "$DISK" < "/etc/$(basename "$DISK")_sfdisk_backup"
+    log "Partition table restored from backup."
     exit 1
 fi
 
-# 同步磁盘更改
+log "Partition table modified successfully."
+
+# Synchronize disk changes
 sync
 
-# 标记分区已调整，待下一次启动调整文件系统
+# Mark that the partition has been resized and the filesystem needs to be resized
 touch "$PARTITION_RESIZED_FLAG"
 
-echo "分区表已修改。系统将重启以应用更改。"
-# 重启系统以应用新的分区表
+log "Partition resized. Rebooting to apply changes."
+
+# Reboot the system to apply the new partition table
 reboot
 
-# 在系统重启后，扩展文件系统
-# 脚本将在重启后检测到 $PARTITION_RESIZED_FLAG 并执行扩展
+# The script will exit here and continue after reboot to resize the filesystem
 exit 0
