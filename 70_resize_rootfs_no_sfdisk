@@ -12,9 +12,6 @@ log() {
     logger -t resize_rootfs "$1"
 }
 
-# Get the root partition device, e.g., /dev/sda1, /dev/nvme0n1p1, /dev/mmcblk0p2
-ROOT_DEV=$(df / | tail -1 | awk '{print $1}')
-
 # Function to extract the base disk from the root partition device
 get_base_disk() {
     local dev="$1"
@@ -30,6 +27,10 @@ get_base_disk() {
     fi
 }
 
+# Get the root partition device, e.g., /dev/sda1, /dev/nvme0n1p1, /dev/mmcblk0p2
+ROOT_DEV=$(df / | tail -1 | awk '{print $1}')
+
+# Extract the base disk device
 DISK=$(get_base_disk "$ROOT_DEV")
 
 # Confirm the DISK path exists
@@ -129,6 +130,17 @@ fi
 
 log "Partition $PARTITION_PATH starts at sector: $START_SECTOR"
 
+# Determine the partition table type (gpt or dos)
+PART_TYPE=$(fdisk -l "$DISK" 2>/dev/null | grep -i 'Disklabel type:' | awk '{print $NF}')
+
+if [ "$PART_TYPE" = "gpt" ]; then
+    PT_TYPE="gpt"
+    log "Partition table type detected: GPT"
+else
+    PT_TYPE="mbr"
+    log "Partition table type detected: MBR"
+fi
+
 # Backup the current partition table
 fdisk -l "$DISK" > "/etc/$(basename "$DISK")_fdisk_backup.log" 2>&1
 if [ $? -ne 0 ]; then
@@ -141,24 +153,56 @@ log "Backing up current partition table."
 # Modify the partition table using fdisk
 log "Modifying the partition table using fdisk..."
 
-# Use fdisk to delete and recreate the partition with the new end sector
-(
-    echo "d"              # Delete partition
-    echo "$PARTITION_NUM"  # Partition number
-    echo "n"              # New partition
-    echo "p"              # Primary partition
-    echo "$PARTITION_NUM"  # Partition number
-    echo "$START_SECTOR"   # Start sector
-    echo "$NEW_END_SECT"   # End sector
-    echo "w"              # Write changes
-) | fdisk "$DISK" > "/etc/$(basename "$DISK")_fdisk_modify.log" 2>&1
+if [ "$PT_TYPE" = "gpt" ]; then
+    # GPT: No need to specify partition type
+    (
+        echo "d"              # Delete partition
+        echo "$PARTITION_NUM"  # Partition number
+        echo "n"              # New partition
+        echo "$PARTITION_NUM"  # Partition number
+        echo "$START_SECTOR"   # Start sector
+        echo "$NEW_END_SECT"   # End sector
+        echo "w"              # Write changes
+    ) | fdisk "$DISK" >/dev/null 2>&1
+else
+    # MBR: Need to specify partition type (primary 'p')
+    (
+        echo "d"              # Delete partition
+        echo "$PARTITION_NUM"  # Partition number
+        echo "n"              # New partition
+        echo "p"              # Primary partition
+        echo "$PARTITION_NUM"  # Partition number
+        echo "$START_SECTOR"   # Start sector
+        echo "$NEW_END_SECT"   # End sector
+        echo "w"              # Write changes
+    ) | fdisk "$DISK" >/dev/null 2>&1
+fi
 
 if [ $? -ne 0 ]; then
-    log "Failed to modify the partition table. Restoring from backup."
+    log "Failed to modify the partition table. Attempting to restore from backup."
     # Attempt to restore from the backup
-    # Note: fdisk does not support restoring from a backup directly
-    # Therefore, we log this action for manual intervention
-    log "Please manually restore the partition table from /etc/$(basename "$DISK")_fdisk_backup.log"
+    (
+        echo "d"              # Delete the newly modified partition (if any)
+        echo "$PARTITION_NUM"  # Partition number
+        echo "n"              # New partition
+        # Determine partition type based on original partition table
+        if [ "$PT_TYPE" != "gpt" ]; then
+            echo "p"              # Primary partition
+        fi
+        echo "$PARTITION_NUM"    # Partition number
+        echo "$START_SECTOR"     # Start sector
+        # Extract the original end sector from backup
+        ORIG_END_SECT=$(grep "^$PARTITION_PATH " "/etc/$(basename "$DISK")_fdisk_backup.log" | awk '{print $3}')
+        echo "$ORIG_END_SECT"     # Original end sector
+        echo "w"                  # Write changes
+    ) | fdisk "$DISK" >/dev/null 2>&1
+
+    if [ $? -ne 0 ]; then
+        log "Failed to restore the partition table from backup. Manual intervention required."
+        exit 1
+    fi
+
+    log "Partition table restored from backup."
     exit 1
 fi
 
