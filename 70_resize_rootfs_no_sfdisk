@@ -19,13 +19,13 @@ ROOT_DEV=$(df / | tail -1 | awk '{print $1}')
 get_base_disk() {
     local dev="$1"
     if echo "$dev" | grep -q '^/dev/nvme'; then
-        # For NVMe devices, e.g., /dev/nvme0n1p1 → /dev/nvme0n1
+        # For NVMe devices, e.g., /dev/nvme0n1p1 -> /dev/nvme0n1
         echo "$dev" | sed -E 's/p[0-9]+$//'
     elif echo "$dev" | grep -q '^/dev/mmcblk'; then
-        # For MMC devices, e.g., /dev/mmcblk0p2 → /dev/mmcblk0
+        # For MMC devices, e.g., /dev/mmcblk0p2 -> /dev/mmcblk0
         echo "$dev" | sed -E 's/p[0-9]+$//'
     else
-        # For standard devices, e.g., /dev/sda1 → /dev/sda
+        # For standard devices, e.g., /dev/sda1 -> /dev/sda
         echo "$dev" | sed 's/[0-9]*$//'
     fi
 }
@@ -130,7 +130,7 @@ fi
 log "Partition $PARTITION_PATH starts at sector: $START_SECTOR"
 
 # Backup the current partition table
-sfdisk -d "$DISK" > "/etc/$(basename "$DISK")_sfdisk_backup"
+fdisk -l "$DISK" > "/etc/$(basename "$DISK")_fdisk_backup.log" 2>&1
 if [ $? -ne 0 ]; then
     log "Failed to backup the partition table of $DISK."
     exit 1
@@ -138,24 +138,27 @@ fi
 
 log "Backing up current partition table."
 
-# Modify the partition table using sfdisk
-log "Modifying the partition table using sfdisk..."
+# Modify the partition table using fdisk
+log "Modifying the partition table using fdisk..."
 
-# Use sfdisk to delete the existing partition and recreate it with the new end sector
+# Use fdisk to delete and recreate the partition with the new end sector
 (
-    echo "d"
-    echo "$PARTITION_NUM"
-    echo "n"
-    echo "$PARTITION_NUM"
-    echo "$START_SECTOR"
-    echo "$NEW_END_SECT"
-    echo "w"
-) | sfdisk "$DISK" >/dev/null 2>&1
+    echo "d"              # Delete partition
+    echo "$PARTITION_NUM"  # Partition number
+    echo "n"              # New partition
+    echo "p"              # Primary partition
+    echo "$PARTITION_NUM"  # Partition number
+    echo "$START_SECTOR"   # Start sector
+    echo "$NEW_END_SECT"   # End sector
+    echo "w"              # Write changes
+) | fdisk "$DISK" > "/etc/$(basename "$DISK")_fdisk_modify.log" 2>&1
 
 if [ $? -ne 0 ]; then
     log "Failed to modify the partition table. Restoring from backup."
-    sfdisk "$DISK" < "/etc/$(basename "$DISK")_sfdisk_backup"
-    log "Partition table restored from backup."
+    # Attempt to restore from the backup
+    # Note: fdisk does not support restoring from a backup directly
+    # Therefore, we log this action for manual intervention
+    log "Please manually restore the partition table from /etc/$(basename "$DISK")_fdisk_backup.log"
     exit 1
 fi
 
