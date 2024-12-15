@@ -159,6 +159,12 @@ rm -rf ../../customfeeds/packages/net/alist
 rm -rf ../../customfeeds/luci/applications/luci-app-alist
 git clone -b lua --depth=1 https://github.com/sbwml/luci-app-alist
 
+# qbittorrent
+rm -rf ../../customfeeds/packages/net/qBittorrent
+rm -rf ../../customfeeds/packages/libs/rblibtorrent
+git clone --depth=1 https://github.com/sbwml/luci-app-qbittorrent
+rm -rf luci-app-qbittorrent/luci-app-qbittorrent
+
 # Add luci-app-smartdns & smartdns
 rm -rf ../../customfeeds/luci/applications/luci-app-smartdns
 git clone --depth=1 -b lede https://github.com/pymumu/luci-app-smartdns
