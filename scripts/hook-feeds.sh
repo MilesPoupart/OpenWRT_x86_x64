@@ -63,7 +63,7 @@ clone_and_cleanup "packages/net/dufs" "immortalwrt" "packages" "use_default_bran
 git clone --depth=1 https://github.com/immortalwrt/openwrt-tmate
 
 # Add gotop
-clone_and_cleanup "packages/admin/gotop" "immortalwrt" "packages" "openwrt-18.06" "admin/gotop" "packages/admin/gotop"
+clone_and_cleanup "packages/admin/gotop" "immortalwrt" "packages" "use_default_branch" "admin/gotop" "packages/admin/gotop"
 
 # Add minieap
 clone_and_cleanup "packages/net/minieap" "immortalwrt" "packages" "use_default_branch" "net/minieap" "packages/net/minieap"
