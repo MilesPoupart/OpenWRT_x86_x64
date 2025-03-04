@@ -47,7 +47,7 @@ cp -f $GITHUB_WORKSPACE/80_mount_root package/base-files/files/lib/preinit/80_mo
 
 # gloang
 rm -rf feeds/packages/lang/golang
-git clone https://github.com/sbwml/packages_lang_golang -b 23.x feeds/packages/lang/golang
+git clone https://github.com/sbwml/packages_lang_golang -b 24.x feeds/packages/lang/golang
 
 mkdir package/community
 pushd package/community
@@ -243,4 +243,5 @@ echo -e "/_/  /_/_/_/\__/___/__/|__/_/  \__/ " >> package/base-files/files/etc/b
 echo -e "------------------------------------" >> package/base-files/files/etc/banner
 echo -e "MilesPoupart's MilesWrt built on "$(date +%Y.%m.%d)"\n------------------------------------" >> package/base-files/files/etc/banner
 
+# Uncomment if needed
 # cp -r ../target/linux/generic/pending-6.1/ ./target/linux/generic/
