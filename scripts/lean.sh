@@ -48,7 +48,7 @@ pushd package/community
 
 # Add luci-app-watchcat-plus
 rm -rf ../../customfeeds/luci/applications/luci-app-watchcat-plus
-git clone https://github.com/MilesPoupart/luci-app-watchcat-plus.git
+git clone https://github.com/0x676e67/luci-app-watchcat-plus.git
 
 # Add Lienol's Packages
 git clone --depth=1 https://github.com/Lienol/openwrt-package
@@ -168,8 +168,8 @@ rm -rf ./luci-theme-argon/htdocs/luci-static/argon/img/bg1.jpg
 cp -f "$GITHUB_WORKSPACE/data/bg1.jpg" luci-theme-argon/htdocs/luci-static/argon/img/bg1.jpg
 rm -rf ../../customfeeds/luci/themes/luci-theme-design
 rm -rf ../../customfeeds/luci/applications/luci-app-design-config
-git clone --depth=1 https://github.com/MilesPoupart/luci-app-design-config
-git clone --depth=1 https://github.com/MilesPoupart/luci-theme-design
+git clone --depth=1 https://github.com/0x676e67/luci-app-design-config
+git clone --depth=1 https://github.com/0x676e67/luci-theme-design
 
 # Add subconverter
 git clone --depth=1 https://github.com/tindy2013/openwrt-subconverter
