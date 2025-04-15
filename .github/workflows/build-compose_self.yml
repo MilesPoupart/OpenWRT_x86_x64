@@ -98,7 +98,7 @@ jobs:
         echo "Kernel Version=${{ inputs.kernel_version}}"
         echo "LuCI Version=${{ inputs.luci_version}}"
         echo "Compile Version=${{ inputs.compile_version }}"
-        echo "Tsak settings=${{ inputs.task_setting }}"
+        echo "Task settings=${{ inputs.task_setting }}"
         echo "Compile machine=${{ inputs.use_machine }}"
 
     - name: Checkout
