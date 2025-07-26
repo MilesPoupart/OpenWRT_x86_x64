@@ -173,10 +173,10 @@ rm -rf ../../customfeeds/packages/net/lucky
 rm -rf ../../customfeeds/luci/applications/luci-app-lucky
 git clone --depth=1 https://github.com/gdy666/luci-app-lucky
 
-# Add openlist
+# Add openlist2
 rm -rf ../../customfeeds/packages/net/openlist
 rm -rf ../../customfeeds/luci/applications/luci-app-openlist
-git clone --depth=1 https://github.com/sbwml/luci-app-openlist
+git clone --depth=1 https://github.com/sbwml/luci-app-openlist2
 
 # qbittorrent
 rm -rf ../../customfeeds/packages/net/qBittorrent
@@ -184,8 +184,13 @@ rm -rf ../../customfeeds/packages/libs/rblibtorrent
 rm -rf ../../customfeeds/luci/applications/luci-app-qbittorrent
 git clone --depth=1 https://github.com/sbwml/luci-app-qbittorrent
 
-# ram free
+# ram free and quickfile
+rm -rf ../../customfeeds/luci/applications/luci-app-ramfree
+rm -rf ../../customfeeds/packages/utils/ramfree
+rm -rf ../customfeeds/luci/applications/luci-app-quickfile
+rm -rf ../customfeeds/packages/utils/quickfile
 git clone --depth=1 https://github.com/sbwml/luci-app-ramfree
+git clone --depth=1 https://github.com/sbwml/luci-app-quickfile
 
 # easytier
 git clone --depth=1 https://github.com/EasyTier/luci-app-easytier.git
