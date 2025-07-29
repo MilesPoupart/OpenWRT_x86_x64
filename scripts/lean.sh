@@ -126,7 +126,7 @@ git clone --depth=1 https://github.com/UnblockNeteaseMusic/luci-app-unblocknetea
 # Add other applications
 git clone --depth=1 https://github.com/jerrykuku/lua-maxminddb.git
 git clone --depth=1 https://github.com/MilesPoupart/luci-app-vssr
-git clone --depth=1 https://github.com/ysc3839/luci-proto-minieap
+# git clone --depth=1 https://github.com/ysc3839/luci-proto-minieap
 git clone --depth=1 https://github.com/rufengsuixing/luci-app-onliner
 rm -rf ../../customfeeds/luci/applications/luci-app-serverchan
 git clone --depth=1 https://github.com/tty228/luci-app-wechatpush.git
