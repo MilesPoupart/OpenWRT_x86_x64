@@ -48,7 +48,7 @@ function github_partial_clone() {
 
 # Gloang
 rm -rf feeds/packages/lang/golang
-git clone https://github.com/sbwml/packages_lang_golang -b 24.x feeds/packages/lang/golang
+git clone https://github.com/sbwml/packages_lang_golang -b 25.x feeds/packages/lang/golang
 
 # Docker ecosystem
 rm -rf feeds/packages/utils/docker
@@ -136,6 +136,7 @@ git clone --depth=1 https://github.com/xiaorouji/openwrt-passwall2
 git clone --depth=1 https://github.com/xiaorouji/openwrt-passwall-packages
 
 # Add other applications
+rm -rf ../../customfeeds/luci/applications/luci-app-onliner
 git clone --depth=1 https://github.com/rufengsuixing/luci-app-onliner
 rm -rf ../../customfeeds/luci/applications/luci-app-wechatpush
 git clone --depth=1 https://github.com/tty228/luci-app-wechatpush.git
