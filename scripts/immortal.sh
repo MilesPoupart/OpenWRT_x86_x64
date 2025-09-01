@@ -223,6 +223,10 @@ rm -rf ../../customfeeds/packages/multimedia/aliyundrive-webdav
 github_partial_clone messense aliyundrive-webdav use_default_branch openwrt/aliyundrive-webdav aliyundrive-webdav
 github_partial_clone messense aliyundrive-webdav use_default_branch openwrt/luci-app-aliyundrive-webdav luci-app-aliyundrive-webdav
 
+# Replace nginx.config file
+rm -rf ../../customfeeds/packages/net/nginx-util/files/nginx.config
+cp -f "$GITHUB_WORKSPACE/configs/immortal/nginx.config" ../../customfeeds/packages/net/nginx-util/files/
+
 BASE_DIR="$(pwd)"
 
 # 使用 find 查找所有以 /po/zh-cn 结尾的目录
@@ -272,10 +276,6 @@ popd
 
 # Change default shell to zsh
 sed -i 's/\/bin\/ash/\/usr\/bin\/zsh/g' package/base-files/files/etc/passwd
-
-# Replace nginx.config file
-rm -rf ../../customfeeds/packages/net/nginx-util/files/nginx.config
-cp -f "$GITHUB_WORKSPACE/configs/immortal/nginx.config" ../../customfeeds/packages/net/nginx-util/files/nginx.config
 
 # Modify default IP
 sed -i 's/192.168.1.1/192.168.4.1/g' package/base-files/files/bin/config_generate
