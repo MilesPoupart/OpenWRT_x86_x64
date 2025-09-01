@@ -1,11 +1,10 @@
 #!/bin/bash
 #=================================================
-# File name: lean.sh
+# File name: immortal.sh
 # System Required: Linux
 # Version: 1.0
 # License: MIT
-# Author: SuLingGG
-# Blog: https://mlapp.cn
+# Author: MilesPoupart
 #=================================================
 
 now_dir=$(pwd)
