@@ -66,12 +66,12 @@ git clone --depth=1 https://github.com/sbwml/packages_utils_containerd.git feeds
 mkdir -p package/community
 pushd package/community
 
+git clone --depth=1 https://github.com/nikkinikki-org/OpenWrt-nikki
+git clone --depth=1 https://github.com/linkease/istore
+
 # Add luci-app-watchcat-plus
 rm -rf ../../customfeeds/luci/applications/luci-app-watchcat-plus
 git clone https://github.com/0x676e67/luci-app-watchcat-plus.git
-
-# Add mentohust (dependency for luci-app-airwhu)
-git clone --depth=1 https://github.com/KyleRicardo/MentoHUST-OpenWrt-ipk
 
 # Add Lienol's Packages
 git clone --depth=1 https://github.com/Lienol/openwrt-package
@@ -164,7 +164,6 @@ git clone --depth=1 https://github.com/esirplayground/luci-app-poweroff
 
 # Add luci-theme
 rm -rf ../../customfeeds/luci/themes/luci-theme-argon
-rm -rf ../../customfeeds/luci/themes/luci-theme-argon-mod
 rm -rf ../../customfeeds/luci/applications/luci-app-argon-config
 git clone --depth=1 https://github.com/jerrykuku/luci-theme-argon
 git clone --depth=1 https://github.com/jerrykuku/luci-app-argon-config
