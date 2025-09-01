@@ -27,21 +27,42 @@ function github_partial_clone() {
 
     mkdir -p "$saved_dir"
 
-    if [ ! -d "${clone_dir}/${repository_name}" ]; then
-        git clone --depth=1 ${branch_option} "${url_prefix}${author_name}/${repository_name}.git" "${clone_dir}/${repository_name}"
+    # Create author-specific directory to avoid conflicts between different authors with same repo names
+    local repo_path="${clone_dir}/${author_name}/${repository_name}"
+    
+    # Only clone if repository doesn't exist
+    if [ ! -d "$repo_path" ]; then
+        echo "Cloning ${author_name}/${repository_name} for the first time..."
+        mkdir -p "${clone_dir}/${author_name}"
+        git clone --depth=1 ${branch_option} "${url_prefix}${author_name}/${repository_name}.git" "$repo_path"
+    else
+        echo "Reusing existing ${author_name}/${repository_name} repository..."
     fi
 
-    mv "${clone_dir}/${repository_name}/${required_dir}/"* "$saved_dir"
-    rm -rf "${clone_dir}/${repository_name}"
+    # Copy (not move) files to preserve the repository for future use
+    if [ -d "${repo_path}/${required_dir}" ]; then
+        cp -r "${repo_path}/${required_dir}/"* "$saved_dir/"
+    else
+        echo "Warning: Directory ${required_dir} not found in ${author_name}/${repository_name}"
+    fi
 }
-
-# Clone community packages to package/community
-rm -rf package/base-files/files/lib/preinit/80_mount_root
-cp -f "$GITHUB_WORKSPACE/80_mount_root" package/base-files/files/lib/preinit/80_mount_root
 
 # Gloang
 rm -rf feeds/packages/lang/golang
 git clone https://github.com/sbwml/packages_lang_golang -b 24.x feeds/packages/lang/golang
+
+# Docker ecosystem
+rm -rf feeds/packages/utils/docker
+git clone --depth=1 https://github.com/sbwml/packages_utils_docker.git feeds/packages/utils/docker
+
+rm -rf feeds/packages/utils/dockerd
+git clone --depth=1 https://github.com/sbwml/packages_utils_dockerd.git feeds/packages/utils/dockerd
+
+rm -rf feeds/packages/utils/runc
+git clone --depth=1 https://github.com/sbwml/packages_utils_runc.git feeds/packages/utils/runc
+
+rm -rf feeds/packages/utils/containerd
+git clone --depth=1 https://github.com/sbwml/packages_utils_containerd.git feeds/packages/utils/containerd
 
 mkdir -p package/community
 pushd package/community
@@ -60,14 +81,6 @@ rm -rf openwrt-package/luci-app-verysync
 rm -rf openwrt-package/luci-app-softethervpn
 rm -rf openwrt-package/luci-app-ramfree
 
-# Add luci-app-netdata
-rm -rf ../../customfeeds/luci/applications/luci-app-netdata
-git clone --depth=1 https://github.com/sirpdboy/luci-app-netdata
-
-# Add luci-app-partexp
-rm -rf ../../customfeeds/luci/applications/luci-app-partexp
-git clone --depth=1 https://github.com/sirpdboy/luci-app-partexp
-
 # Add luci-app-netspeedtest
 rm -rf ../../customfeeds/luci/applications/luci-app-netspeedtest
 git clone --depth=1 https://github.com/sirpdboy/NetSpeedTest
@@ -76,13 +89,6 @@ git clone --depth=1 https://github.com/sirpdboy/NetSpeedTest
 rm -rf ../../customfeeds/luci/applications/luci-app-autotimeset
 git clone --depth=1 https://github.com/sirpdboy/luci-app-taskplan
 sed -i "s/\"control\"/\"system\"/g" luci-app-taskplan/luci-app-taskplan/luasrc/controller/taskplan.lua
-
-# Add luci-app-dockerman
-# rm -rf ../../customfeeds/luci/collections/luci-lib-docker
-# rm -rf ../../customfeeds/luci/applications/luci-app-docker
-# rm -rf ../../customfeeds/luci/applications/luci-app-dockerman
-# github_partial_clone lisaac luci-app-dockerman use_default_branch applications/luci-app-dockerman luci-app-dockerman
-# github_partial_clone lisaac luci-lib-docker use_default_branch collections/luci-lib-docker luci-lib-docker
 
 # Add mosdns
 rm -rf ../../customfeeds/packages/net/mosdns
@@ -103,6 +109,7 @@ rm -rf ../../customfeeds/packages/net/hysteria
 rm -rf ../../customfeeds/packages/net/ipt2socks
 rm -rf ../../customfeeds/packages/net/microsocks
 rm -rf ../../customfeeds/packages/net/naiveproxy
+rm -rf ../../customfeeds/packages/net/shadow-tls
 rm -rf ../../customfeeds/packages/net/shadowsocks-libev
 rm -rf ../../customfeeds/packages/net/shadowsocks-rust
 rm -rf ../../customfeeds/packages/net/shadowsocksr-libev
@@ -119,16 +126,9 @@ git clone --depth=1 https://github.com/xiaorouji/openwrt-passwall
 git clone --depth=1 https://github.com/xiaorouji/openwrt-passwall2
 git clone --depth=1 https://github.com/xiaorouji/openwrt-passwall-packages
 
-# Add luci-app-unblockneteasemusic
-rm -rf ../../customfeeds/luci/applications/luci-app-unblockmusic
-git clone --depth=1 https://github.com/UnblockNeteaseMusic/luci-app-unblockneteasemusic.git
-
 # Add other applications
-git clone --depth=1 https://github.com/jerrykuku/lua-maxminddb.git
-git clone --depth=1 https://github.com/MilesPoupart/luci-app-vssr
-# git clone --depth=1 https://github.com/ysc3839/luci-proto-minieap
 git clone --depth=1 https://github.com/rufengsuixing/luci-app-onliner
-rm -rf ../../customfeeds/luci/applications/luci-app-serverchan
+rm -rf ../../customfeeds/luci/applications/luci-app-wechatpush
 git clone --depth=1 https://github.com/tty228/luci-app-wechatpush.git
 
 # Add ddnsto & linkease
@@ -144,6 +144,10 @@ github_partial_clone linkease nas-packages use_default_branch multimedia/ffmpeg-
 # Add OpenClash
 rm -rf ../../customfeeds/luci/applications/luci-app-openclash
 github_partial_clone vernesong OpenClash use_default_branch luci-app-openclash luci-app-openclash
+
+# Add luci-app-turboacc
+rm -rf ../../customfeeds/luci/applications/luci-app-turboacc
+github_partial_clone coolsnowwolf luci openwrt-24.10 applications/luci-app-turboacc luci-app-turboacc
 
 # add wrtbwmon
 github_partial_clone brvphoenix luci-app-wrtbwmon use_default_branch luci-app-wrtbwmon luci-app-wrtbwmon
@@ -176,6 +180,8 @@ git clone --depth=1 https://github.com/gdy666/luci-app-lucky
 # Add openlist2
 rm -rf ../../customfeeds/packages/net/openlist
 rm -rf ../../customfeeds/luci/applications/luci-app-openlist
+rm -rf ../../customfeeds/packages/net/openlist2
+rm -rf ../../customfeeds/luci/applications/luci-app-openlist2
 git clone --depth=1 https://github.com/sbwml/luci-app-openlist2
 
 # qbittorrent
@@ -192,11 +198,12 @@ rm -rf ../customfeeds/packages/utils/quickfile
 git clone --depth=1 https://github.com/sbwml/luci-app-ramfree
 git clone --depth=1 https://github.com/sbwml/luci-app-quickfile
 
+# replace luci-app-smartdns
+rm -rf ../../customfeeds/luci/applications/luci-app-smartdns
+git clone -depth=1 https://github.com/pymumu/luci-app-smartdns
+
 # easytier
 git clone --depth=1 https://github.com/EasyTier/luci-app-easytier.git
-# Add luci-app-smartdns & smartdns
-# rm -rf ../../customfeeds/luci/applications/luci-app-smartdns
-# git clone --depth=1 https://github.com/pymumu/luci-app-smartdns
 
 # Add luci-app-wolplus
 rm -rf ../../customfeeds/luci/applications/luci-app-wolplus
@@ -211,72 +218,6 @@ rm -rf ../../customfeeds/packages/multimedia/aliyundrive-webdav
 github_partial_clone messense aliyundrive-webdav use_default_branch openwrt/aliyundrive-webdav aliyundrive-webdav
 github_partial_clone messense aliyundrive-webdav use_default_branch openwrt/luci-app-aliyundrive-webdav luci-app-aliyundrive-webdav
 
-BASE_DIR="$(pwd)"
-
-# 使用 find 查找所有以 /po/zh-cn 结尾的目录
-find "$BASE_DIR" -type d -path "*/po/zh-cn" | while IFS= read -r zh_cn_dir; do
-    # 获取 po 目录的路径
-    po_dir=$(dirname "$zh_cn_dir")
-    
-    # 定义 zh_Hans 目录的路径
-    zh_Hans_dir="zh_Hans"
-    
-    echo "处理目录: $po_dir"
-
-    # 使用 pushd 进入 po 目录
-    pushd "$po_dir" > /dev/null
-    if [ $? -ne 0 ]; then
-        echo "错误: 无法进入目录: $po_dir"
-        continue
-    fi
-
-    # 检查 zh_Hans 是否已经存在（包括文件、目录或链接）
-    if [ ! -e "$zh_Hans_dir" ]; then
-        # 创建指向 zh-cn 的软链接 zh_Hans
-        ln -s "zh-cn" "$zh_Hans_dir"
-        if [ $? -eq 0 ]; then
-            echo "成功创建软链接: $po_dir/$zh_Hans_dir -> zh-cn"
-        else
-            echo "错误: 无法创建软链接: $po_dir/$zh_Hans_dir"
-        fi
-    else
-        echo "已存在: $po_dir/$zh_Hans_dir，不做任何操作。"
-    fi
-
-    # 使用 popd 返回原工作目录
-    popd > /dev/null
-    if [ $? -ne 0 ]; then
-        echo "错误: 无法返回到原工作目录。"
-        exit 1
-    fi
-
-    echo "完成处理目录: $po_dir"
-    echo "----------------------------------------"
-done
-
-echo "所有目录处理完毕。"
-
-popd
-
-# Add Pandownload
-pushd package/lean
-rm -rf ../../customfeeds/packages/net/pandownload-fake-server
-github_partial_clone immortalwrt packages use_default_branch net/pandownload-fake-server pandownload-fake-server
-popd
-
-# Mod zzz-default-settings
-pushd package/lean/default-settings/files
-sed -i '/http/d' zzz-default-settings
-sed -i '/18.06/d' zzz-default-settings
-export orig_version=$(grep DISTRIB_REVISION= zzz-default-settings | awk -F "'" '{print $2}')
-export date_version=$(date -d "$(rdate -n -4 -p ntp.aliyun.com)" +'%Y-%m-%d')
-sed -i "s/${orig_version}/${orig_version} (${date_version})/g" zzz-default-settings
-popd
-
-# Fix libssh
-pushd feeds/packages/libs
-rm -rf libssh
-github_partial_clone openwrt packages use_default_branch libs/libssh libssh
 popd
 
 # Change default shell to zsh
@@ -284,13 +225,10 @@ sed -i 's/\/bin\/ash/\/usr\/bin\/zsh/g' package/base-files/files/etc/passwd
 
 # Modify default IP
 sed -i 's/192.168.1.1/192.168.4.1/g' package/base-files/files/bin/config_generate
-sed -i 's/192.168.1.1/192.168.4.1/g' package/base-files/luci2/bin/config_generate
-sed -i '/uci commit system/i\uci set system.@system[0].hostname='MilesWrt'' package/lean/default-settings/files/zzz-default-settings
-sed -i "s/LEDE /MilesPoupart @ MilesWrt /g" package/lean/default-settings/files/zzz-default-settings
+sed -i "s/ImmortalWrt/MilesWrt/g" package/base-files/files/bin/config_generate
 
-# Clean up network configuration
-rm -rf target/linux/x86/base-files/etc/board.d/02_network
-cp -f "$GITHUB_WORKSPACE/02_network" target/linux/x86/base-files/etc/board.d/02_network
+# Add default-string to network configuration
+sed -i 's/roqos-roqos-core-rc10)/roqos-roqos-core-rc10|default-string)/' target/linux/x86/base-files/etc/board.d/02_network
 
 rm package/base-files/files/etc/banner
 touch package/base-files/files/etc/banner
@@ -307,3 +245,12 @@ touch package/base-files/files/etc/banner
 
 # Uncomment if needed
 # cp -r ../target/linux/generic/pending-6.1/ ./target/linux/generic/
+
+# Cleanup function - uncomment if you want to clean up cloned repositories after build
+cleanup_clone_dir() {
+    echo "Cleaning up temporary clone directory..."
+    rm -rf "$clone_dir"
+}
+
+# Uncomment the following line to enable automatic cleanup
+cleanup_clone_dir

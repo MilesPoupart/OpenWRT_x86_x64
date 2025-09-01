@@ -19,7 +19,7 @@
 - 固件下载地址：https://github.com/MilesPoupart/OpenWRT_x86_x64/releases
 
 # 插件展示
- ![Alt text](scripts/20.png?raw=true "Title")
+ ![Alt text](data/20.png?raw=true "Title")
 
 ### 固件特色
 1. 集成 iStore 应用商店，可根据自己需求自由安装所需插件
