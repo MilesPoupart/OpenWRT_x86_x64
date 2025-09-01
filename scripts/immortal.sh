@@ -238,7 +238,7 @@ sed -i 's/192.168.1.1/192.168.4.1/g' package/base-files/files/bin/config_generat
 sed -i "s/ImmortalWrt/MilesWrt/g" package/base-files/files/bin/config_generate
 
 # Add default-string to network configuration
-sed -i 's/roqos-roqos-core-rc10)/roqos-roqos-core-rc10|default-string)/' target/linux/x86/base-files/etc/board.d/02_network
+sed -i 's/roqos-roqos-core-rc10)/roqos-roqos-core-rc10|default-string-default-string)/' target/linux/x86/base-files/etc/board.d/02_network
 
 rm package/base-files/files/etc/banner
 touch package/base-files/files/etc/banner
