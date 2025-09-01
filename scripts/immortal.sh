@@ -71,6 +71,9 @@ pushd package/community
 rm -rf ../../customfeeds/luci/applications/luci-app-watchcat-plus
 git clone https://github.com/0x676e67/luci-app-watchcat-plus.git
 
+# Add mentohust (dependency for luci-app-airwhu)
+git clone --depth=1 https://github.com/KyleRicardo/MentoHUST-OpenWrt-ipk
+
 # Add Lienol's Packages
 git clone --depth=1 https://github.com/Lienol/openwrt-package
 rm -rf ../../customfeeds/luci/applications/luci-app-kodexplorer
@@ -80,6 +83,7 @@ rm -rf openwrt-package/verysync
 rm -rf openwrt-package/luci-app-verysync
 rm -rf openwrt-package/luci-app-softethervpn
 rm -rf openwrt-package/luci-app-ramfree
+rm -rf openwrt-package/luci-app-nginx-pingos
 
 # Add luci-app-netspeedtest
 rm -rf ../../customfeeds/luci/applications/luci-app-netspeedtest
@@ -196,7 +200,7 @@ git clone --depth=1 https://github.com/sbwml/luci-app-quickfile
 
 # replace luci-app-smartdns
 rm -rf ../../customfeeds/luci/applications/luci-app-smartdns
-git clone -depth=1 https://github.com/pymumu/luci-app-smartdns
+git clone --depth=1 https://github.com/pymumu/luci-app-smartdns
 
 # easytier
 git clone --depth=1 https://github.com/EasyTier/luci-app-easytier.git
