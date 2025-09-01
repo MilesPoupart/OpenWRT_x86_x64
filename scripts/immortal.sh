@@ -145,10 +145,6 @@ github_partial_clone linkease nas-packages use_default_branch multimedia/ffmpeg-
 rm -rf ../../customfeeds/luci/applications/luci-app-openclash
 github_partial_clone vernesong OpenClash use_default_branch luci-app-openclash luci-app-openclash
 
-# Add luci-app-turboacc
-rm -rf ../../customfeeds/luci/applications/luci-app-turboacc
-github_partial_clone coolsnowwolf luci openwrt-24.10 applications/luci-app-turboacc luci-app-turboacc
-
 # add wrtbwmon
 github_partial_clone brvphoenix luci-app-wrtbwmon use_default_branch luci-app-wrtbwmon luci-app-wrtbwmon
 github_partial_clone brvphoenix wrtbwmon use_default_branch wrtbwmon wrtbwmon
