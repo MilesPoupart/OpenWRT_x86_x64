@@ -100,6 +100,12 @@ rm -rf ../../customfeeds/packages/utils/v2dat
 rm -rf ../../customfeeds/luci/applications/luci-app-mosdns
 git clone --depth=1 https://github.com/sbwml/luci-app-mosdns
 
+# Add custom smartdns and zerotier from MilesPoupart/packages
+rm -rf ../../customfeeds/packages/net/smartdns
+github_partial_clone MilesPoupart packages master net/smartdns ../../customfeeds/packages/net/smartdns
+rm -rf ../../customfeeds/packages/net/zerotier
+github_partial_clone MilesPoupart packages master net/zerotier ../../customfeeds/packages/net/zerotier
+
 # Add luci-app-ssr-plus
 git clone --depth=1 https://github.com/fw876/helloworld
 
@@ -198,7 +204,7 @@ rm -rf ../customfeeds/packages/utils/quickfile
 git clone --depth=1 https://github.com/sbwml/luci-app-ramfree
 git clone --depth=1 https://github.com/sbwml/luci-app-quickfile
 
-# replace luci-app-smartdns
+# replace luci-app-smartdns (using custom smartdns package from above)
 rm -rf ../../customfeeds/luci/applications/luci-app-smartdns
 git clone --depth=1 https://github.com/pymumu/luci-app-smartdns
 
