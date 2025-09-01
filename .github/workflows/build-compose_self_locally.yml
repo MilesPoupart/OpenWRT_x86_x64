@@ -62,7 +62,7 @@ on:
 
 env:
   REPO_URL: https://github.com/${{ inputs.openwrt_source }}
-  CONFIG_FILE: configs/immortal/merged.config
+  CONFIG_FILE: configs/immortal/immortal.config
   DIY_SH: scripts/immortal.sh
   UPLOAD_RELEASE: true
 
