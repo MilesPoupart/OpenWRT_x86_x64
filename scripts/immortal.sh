@@ -68,6 +68,7 @@ rm -rf feeds/packages/net/mwan3
 rm -rf feeds/packages/net/mwan3helper
 rm -rf feeds/luci/applications/luci-app-mwan3
 rm -rf feeds/luci/applications/luci-app-mwan3helper
+rm -rf feeds/packages/utils/prometheus-node-exporter-lua
 
 mkdir -p package/community
 pushd package/community
