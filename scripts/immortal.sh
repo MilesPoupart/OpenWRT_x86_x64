@@ -63,6 +63,12 @@ git clone --depth=1 https://github.com/sbwml/packages_utils_runc.git feeds/packa
 rm -rf feeds/packages/utils/containerd
 git clone --depth=1 https://github.com/sbwml/packages_utils_containerd.git feeds/packages/utils/containerd
 
+# Force remove mwan3 and mwan3helper
+rm -rf feeds/packages/net/mwan3
+rm -rf feeds/packages/net/mwan3helper
+rm -rf feeds/luci/applications/luci-app-mwan3
+rm -rf feeds/luci/applications/luci-app-mwan3helper
+
 mkdir -p package/community
 pushd package/community
 
