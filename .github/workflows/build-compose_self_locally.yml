@@ -228,6 +228,7 @@ jobs:
       RELEASE_DATE: ${{ steps.tag.outputs.RELEASE_DATE }}
       RELEASE_TAG: ${{ steps.tag.outputs.RELEASE_TAG }}
       RELEASE_STATUS: ${{ steps.tag.outputs.RELEASE_STATUS }}
+      KERNEL_VERSION: ${{ steps.generate.outputs.KERNEL_VERSION }}
 
     steps:
 
