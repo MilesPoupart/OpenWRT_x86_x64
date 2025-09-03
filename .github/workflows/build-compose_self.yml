@@ -55,6 +55,14 @@ on:
         - 'build-compose'
         - 'build-only'
         - 'source-only'
+      config_file:
+        description: 'Config File'
+        required: true
+        default: configs/immortal/merged.config
+        type: string
+        options:
+        - configs/immortal/immortal.config
+        - configs/immortal/merged.config
   # schedule:
   #   - cron: 0 17 * * *
   # watch:
@@ -62,7 +70,7 @@ on:
 
 env:
   REPO_URL: https://github.com/${{ inputs.openwrt_source }}
-  CONFIG_FILE: configs/immortal/immortal.config
+  CONFIG_FILE: ${{ inputs.config_file }}
   DIY_SH: scripts/immortal.sh
   UPLOAD_RELEASE: true
   TZ: Asia/Shanghai
@@ -83,6 +91,7 @@ jobs:
         echo "Compile Version=${{ inputs.compile_version }}"
         echo "Task settings=${{ inputs.task_setting }}"
         echo "Compile machine=${{ inputs.use_machine }}"
+        echo "Config File=${{ inputs.config_file }}"
 
     - name: Checkout
       if: inputs.task_setting != 'build-only'
