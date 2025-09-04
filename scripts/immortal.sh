@@ -169,8 +169,12 @@ github_partial_clone vernesong OpenClash use_default_branch luci-app-openclash l
 github_partial_clone brvphoenix luci-app-wrtbwmon use_default_branch luci-app-wrtbwmon luci-app-wrtbwmon
 github_partial_clone brvphoenix wrtbwmon use_default_branch wrtbwmon wrtbwmon
 
-# Add luci-app-poweroff
-git clone --depth=1 https://github.com/esirplayground/luci-app-poweroff
+# Add luci-app-poweroffdevice
+git clone --depth=1 https://github.com/sirpdboy/luci-app-poweroffdevice
+
+# Add bandix
+git clone --depth=1 https://github.com/timsaya/openwrt-bandix
+git clone --depth=1 https://github.com/timsaya/luci-app-bandix
 
 # Add luci-theme
 rm -rf ../../customfeeds/luci/themes/luci-theme-argon
