@@ -94,7 +94,9 @@ rm -rf openwrt-package/luci-app-nginx-pingos
 
 # Add luci-app-netspeedtest
 rm -rf ../../customfeeds/luci/applications/luci-app-netspeedtest
-git clone --depth=1 https://github.com/sirpdboy/NetSpeedTest
+git clone --depth=1 https://github.com/sirpdboy/luci-app-netspeedtest
+rm -rf luci-app-netspeedtest/homebox/Makefile
+wget -O luci-app-netspeedtest/homebox/Makefile https://raw.githubusercontent.com/MilesPoupart/homebox/master/OpenWrt-Makefile
 
 # Add luci-app-autotimeset
 rm -rf ../../customfeeds/luci/applications/luci-app-autotimeset
