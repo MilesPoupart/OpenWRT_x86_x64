@@ -186,7 +186,7 @@ jobs:
             sed -i "s/6.12/$KERNEL_VER/g" target/linux/x86/Makefile
             # cat target/linux/x86/Makefile
         fi
-        ../scripts/preset-clash-core.sh amd64
+        ../scripts/preset-clash-core.sh amd64-v2
         ../scripts/preset-terminal-tools.sh
         if [ "${{ inputs.compile_version }}" == "docker" ]; then
             echo '
