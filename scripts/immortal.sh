@@ -93,10 +93,12 @@ rm -rf openwrt-package/luci-app-ramfree
 rm -rf openwrt-package/luci-app-nginx-pingos
 
 # Add luci-app-netspeedtest
+rm -rf ../../customfeeds/packages/net/speedtest-cli
 rm -rf ../../customfeeds/luci/applications/luci-app-netspeedtest
 git clone --depth=1 https://github.com/sirpdboy/luci-app-netspeedtest
-# rm -rf luci-app-netspeedtest/homebox/Makefile
-# wget -O luci-app-netspeedtest/homebox/Makefile https://raw.githubusercontent.com/MilesPoupart/homebox/master/OpenWrt-Makefile
+rm -rf luci-app-netspeedtest/homebox/Makefile
+wget -O luci-app-netspeedtest/homebox/Makefile https://raw.githubusercontent.com/MilesPoupart/homebox/master/OpenWrt-Makefile
+sed -i.backup 's|/usr/bin/homebox >> |/usr/bin/homebox serve --port 3300 --host 0.0.0.0 >> |' luci-app-netspeedtest/luci-app-netspeedtest/htdocs/luci-static/resources/view/netspeedtest/homebox.js
 
 # Add luci-app-autotimeset
 rm -rf ../../customfeeds/luci/applications/luci-app-autotimeset
