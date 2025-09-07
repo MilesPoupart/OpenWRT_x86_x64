@@ -10,24 +10,33 @@ function github_partial_clone() {
     local branch_name="$3"
     local required_dir="$4"
     local saved_dir="$5"
-
     local url_prefix="https://github.com/"
+    
     local branch_option=""
-
     if [ "$branch_name" != "use_default_branch" ]; then
         branch_option="-b ${branch_name}"
     fi
 
     mkdir -p "$saved_dir"
 
-    # Clone the repository only if it hasn't been cloned yet
-    if [ ! -d "${clone_dir}/${repository_name}" ]; then
-        git clone --depth=1 ${branch_option} "${url_prefix}${author_name}/${repository_name}.git" "${clone_dir}/${repository_name}"
+    # Create author-specific directory to avoid conflicts between different authors with same repo names
+    local repo_path="${clone_dir}/${author_name}/${repository_name}"
+    
+    # Only clone if repository doesn't exist
+    if [ ! -d "$repo_path" ]; then
+        echo "Cloning ${author_name}/${repository_name} for the first time..."
+        mkdir -p "${clone_dir}/${author_name}"
+        git clone --depth=1 ${branch_option} "${url_prefix}${author_name}/${repository_name}.git" "$repo_path"
+    else
+        echo "Reusing existing ${author_name}/${repository_name} repository..."
     fi
 
-    # Move required files and clean up
-    mv "${clone_dir}/${repository_name}/${required_dir}/"* "$saved_dir"
-    rm -rf "${clone_dir}/${repository_name}"
+    # Copy (not move) files to preserve the repository for future use
+    if [ -d "${repo_path}/${required_dir}" ]; then
+        cp -r "${repo_path}/${required_dir}/"* "$saved_dir/"
+    else
+        echo "Warning: Directory ${required_dir} not found in ${author_name}/${repository_name}"
+    fi
 }
 
 # Svn checkout packages from immortalwrt's repository
@@ -106,8 +115,6 @@ find "$BASE_DIR" -type d -path "*/po/zh-cn" | while IFS= read -r zh_cn_dir; do
     
     # 定义 zh_Hans 目录的路径
     zh_Hans_dir="zh_Hans"
-    
-    echo "处理目录: $po_dir"
 
     # 使用 pushd 进入 po 目录
     pushd "$po_dir" > /dev/null
@@ -121,23 +128,18 @@ find "$BASE_DIR" -type d -path "*/po/zh-cn" | while IFS= read -r zh_cn_dir; do
         # 创建指向 zh-cn 的软链接 zh_Hans
         ln -s "zh-cn" "$zh_Hans_dir"
         if [ $? -eq 0 ]; then
-            echo "成功创建软链接: $po_dir/$zh_Hans_dir -> zh-cn"
+            echo "✅ 创建软链接: $po_dir/$zh_Hans_dir -> zh-cn"
         else
-            echo "错误: 无法创建软链接: $po_dir/$zh_Hans_dir"
+            echo "❌ 错误: 无法创建软链接: $po_dir/$zh_Hans_dir"
         fi
-    else
-        echo "已存在: $po_dir/$zh_Hans_dir，不做任何操作。"
     fi
 
     # 使用 popd 返回原工作目录
     popd > /dev/null
     if [ $? -ne 0 ]; then
-        echo "错误: 无法返回到原工作目录。"
+        echo "❌ 错误: 无法返回到原工作目录"
         exit 1
     fi
-
-    echo "完成处理目录: $po_dir"
-    echo "----------------------------------------"
 done
 
 echo "所有目录处理完毕。"
