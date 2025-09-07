@@ -59,7 +59,7 @@ on:
         description: 'Config File'
         required: true
         default: configs/immortal/merged.config
-        type: string
+        type: choice
         options:
         - configs/immortal/merged.config
         - configs/immortal/immortal.config
