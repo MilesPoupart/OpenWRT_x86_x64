@@ -217,7 +217,7 @@ jobs:
         wget -P dl https://r2.cooluc.com/source/quickfile-1.0.5.tar.gz
         wget -P dl https://github.com/messense/aliyundrive-webdav/releases/download/v2.3.3/aliyundrive-webdav-v2.3.3.x86_64-unknown-linux-musl.tar.gz
         wget -P dl https://github.com/messense/aliyundrive-webdav/releases/download/v2.3.3/aliyundrive-webdav-v2.3.3.x86_64-unknown-linux-musl.tar.gz.sha256
-        wget -P dl https://github.com/timsaya/bandix/releases/download/v0.4.8/bandix-0.4.8-x86_64-unknown-linux-musl.tar.gz
+        wget -P dl https://github.com/timsaya/bandix/releases/download/v0.5.2/bandix-0.5.2-x86_64-unknown-linux-musl.tar.gz
         make download -j8
         cat dl/aliyundrive-webdav-v2.3.3.x86_64-unknown-linux-musl.tar.gz.sha256
         find dl -size -1024c -exec ls -l {} \;
