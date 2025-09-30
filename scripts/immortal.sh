@@ -114,8 +114,8 @@ git clone --depth=1 https://github.com/sbwml/luci-app-mosdns
 # Add custom smartdns and zerotier from MilesPoupart/packages
 rm -rf ../../customfeeds/packages/net/smartdns
 github_partial_clone MilesPoupart packages master net/smartdns ../../customfeeds/packages/net/smartdns
-rm -rf ../../customfeeds/packages/net/zerotier
-github_partial_clone MilesPoupart packages master net/zerotier ../../customfeeds/packages/net/zerotier
+# rm -rf ../../customfeeds/packages/net/zerotier
+# github_partial_clone MilesPoupart packages master net/zerotier ../../customfeeds/packages/net/zerotier
 
 # Add luci-app-ssr-plus
 git clone --depth=1 https://github.com/fw876/helloworld
