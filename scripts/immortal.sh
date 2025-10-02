@@ -63,14 +63,6 @@ git clone --depth=1 https://github.com/sbwml/packages_utils_runc.git feeds/packa
 rm -rf feeds/packages/utils/containerd
 git clone --depth=1 https://github.com/sbwml/packages_utils_containerd.git feeds/packages/utils/containerd
 
-# Force remove mwan3 and mwan3helper
-# rm -rf feeds/packages/net/mwan3
-# rm -rf feeds/packages/net/mwan3helper
-# rm -rf feeds/luci/applications/luci-app-mwan3
-# rm -rf feeds/luci/applications/luci-app-mwan3helper
-# rm -rf feeds/packages/utils/prometheus-node-exporter-lua
-# rm -rf feeds/luci/applications/luci-app-syncdial
-
 mkdir -p package/community
 pushd package/community
 
@@ -101,7 +93,7 @@ wget -O luci-app-netspeedtest/homebox/Makefile https://raw.githubusercontent.com
 sed -i.backup 's|/usr/bin/homebox >> |/usr/bin/homebox serve --port 3300 --host 0.0.0.0 >> |' luci-app-netspeedtest/luci-app-netspeedtest/htdocs/luci-static/resources/view/netspeedtest/homebox.js
 
 # Add luci-app-autotimeset
-rm -rf ../../customfeeds/luci/applications/luci-app-autotimeset
+rm -rf ../../customfeeds/luci/applications/luci-app-taskplan
 git clone --depth=1 https://github.com/sirpdboy/luci-app-taskplan
 sed -i "s/\"control\"/\"system\"/g" luci-app-taskplan/luci-app-taskplan/luasrc/controller/taskplan.lua
 
@@ -111,11 +103,9 @@ rm -rf ../../customfeeds/packages/utils/v2dat
 rm -rf ../../customfeeds/luci/applications/luci-app-mosdns
 git clone --depth=1 https://github.com/sbwml/luci-app-mosdns
 
-# Add custom smartdns and zerotier from MilesPoupart/packages
+# Add custom smartdns from MilesPoupart/packages
 rm -rf ../../customfeeds/packages/net/smartdns
 github_partial_clone MilesPoupart packages master net/smartdns ../../customfeeds/packages/net/smartdns
-# rm -rf ../../customfeeds/packages/net/zerotier
-# github_partial_clone MilesPoupart packages master net/zerotier ../../customfeeds/packages/net/zerotier
 
 # Add luci-app-ssr-plus
 git clone --depth=1 https://github.com/fw876/helloworld
@@ -281,6 +271,15 @@ done
 
 popd
 
+# Cleanup function - uncomment if you want to clean up cloned repositories after build
+cleanup_clone_dir() {
+    echo "Cleaning up temporary clone directory..."
+    rm -rf "$clone_dir"
+}
+
+# Uncomment the following line to enable automatic cleanup
+cleanup_clone_dir
+
 # Change default shell to zsh
 sed -i 's/\/bin\/ash/\/usr\/bin\/zsh/g' package/base-files/files/etc/passwd
 
@@ -303,15 +302,3 @@ touch package/base-files/files/etc/banner
     echo -e "MilesPoupart's MilesWrt built on $(date +%Y.%m.%d)"
     echo -e "------------------------------------"
 } >> package/base-files/files/etc/banner
-
-# Uncomment if needed
-# cp -r ../target/linux/generic/pending-6.1/ ./target/linux/generic/
-
-# Cleanup function - uncomment if you want to clean up cloned repositories after build
-cleanup_clone_dir() {
-    echo "Cleaning up temporary clone directory..."
-    rm -rf "$clone_dir"
-}
-
-# Uncomment the following line to enable automatic cleanup
-cleanup_clone_dir
