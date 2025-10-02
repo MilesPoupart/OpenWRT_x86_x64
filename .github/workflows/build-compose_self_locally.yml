@@ -105,7 +105,7 @@ jobs:
     
     - name: Checkout
       if: inputs.task_setting != 'build-only'
-      uses: actions/checkout@v4
+      uses: actions/checkout@v5
 
     - name: Initialization Environment
       if: inputs.task_setting != 'build-only'
@@ -328,7 +328,7 @@ jobs:
     steps:
 
     - name: Upload firmware to release
-      uses: softprops/action-gh-release@v2.2.1
+      uses: softprops/action-gh-release@v2
       if: needs.CompileFirmware.outputs.RELEASE_STATUS == 'success' && !cancelled() && env.UPLOAD_RELEASE == 'true'
       env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
