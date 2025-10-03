@@ -103,9 +103,13 @@ rm -rf ../../customfeeds/packages/utils/v2dat
 rm -rf ../../customfeeds/luci/applications/luci-app-mosdns
 git clone --depth=1 https://github.com/sbwml/luci-app-mosdns
 
-# Add custom smartdns from MilesPoupart/packages
+# Add smartdns
 rm -rf ../../customfeeds/packages/net/smartdns
 github_partial_clone MilesPoupart packages master net/smartdns ../../customfeeds/packages/net/smartdns
+
+# Add zerotier
+rm -rf ../../customfeeds/packages/net/zerotier
+github_partial_clone immortalwrt packages master net/zerotier ../../customfeeds/packages/net/zerotier
 
 # Add luci-app-ssr-plus
 git clone --depth=1 https://github.com/fw876/helloworld
