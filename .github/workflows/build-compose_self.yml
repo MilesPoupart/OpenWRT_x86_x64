@@ -58,11 +58,12 @@ on:
       config_file:
         description: 'Config File'
         required: true
-        default: configs/immortal/merged.config
+        default: configs/immortal/lite.config
         type: choice
         options:
         - configs/immortal/immortal.config
         - configs/immortal/merged.config
+        - configs/immortal/lite.config
   # schedule:
   #   - cron: 0 17 * * *
   # watch:
