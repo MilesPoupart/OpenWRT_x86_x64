@@ -61,9 +61,9 @@ on:
         default: configs/immortal/lite.config
         type: choice
         options:
-        - configs/immortal/immortal.config
-        - configs/immortal/merged.config
-        - configs/immortal/lite.config
+        - immortal
+        - merged
+        - lite
   # schedule:
   #   - cron: 0 17 * * *
   # watch:
@@ -71,7 +71,7 @@ on:
 
 env:
   REPO_URL: https://github.com/${{ inputs.openwrt_source }}
-  CONFIG_FILE: ${{ inputs.config_file }}
+  CONFIG_FILE: configs/immortal/${{ inputs.config_file }}.config
   DIY_SH: scripts/immortal.sh
   UPLOAD_RELEASE: true
   TZ: Asia/Shanghai
@@ -404,19 +404,19 @@ jobs:
         rm -rf immortalwrt-x86-64-generic-ext4-combined-efi.vmdk.gz
         rm -rf immortalwrt-x86-64-generic-ext4-combined.img.gz
         rm -rf immortalwrt-x86-64-generic-squashfs-combined.img.gz
-        mv immortalwrt-x86-64-generic.manifest ${{ inputs.compile_version }}-x86-64-generic.manifest
-        mv config.buildinfo ${{ inputs.compile_version }}-config.buildinfo
-        mv immortalwrt-x86-64-generic-squashfs-combined-efi.img.gz ${{ inputs.compile_version }}-x86-64-squashfs-efi.img.gz
-        mv immortalwrt-x86-64-generic-ext4-combined-efi.img.gz ${{ inputs.compile_version }}-x86-64-ext4-efi.img.gz
+        mv immortalwrt-x86-64-generic.manifest ${{ inputs.compile_version }}-${{ inputs.config_file }}-x86-64-generic.manifest
+        mv config.buildinfo ${{ inputs.compile_version }}-${{ inputs.config_file }}-config.buildinfo
+        mv immortalwrt-x86-64-generic-squashfs-combined-efi.img.gz ${{ inputs.compile_version }}-${{ inputs.config_file }}-x86-64-squashfs-efi.img.gz
+        mv immortalwrt-x86-64-generic-ext4-combined-efi.img.gz ${{ inputs.compile_version }}-${{ inputs.config_file }}-x86-64-ext4-efi.img.gz
         popd
         mkdir -p server/web/snapshots/targets/$TARGET/$SUBTARGET
         cp -r $OPENWRTROOT/bin/packages server/web/snapshots
         cp -r $OPENWRTROOT/bin/targets/$TARGET/$SUBTARGET/packages server/web/snapshots/targets/$TARGET/$SUBTARGET
         mv server packages-server
-        zip -qrm ${{ inputs.compile_version }}-packages-server.zip packages-server
-        mv ${{ inputs.compile_version }}-packages-server.zip $OPENWRTROOT/bin/targets/$TARGET/$SUBTARGET
+        zip -qrm ${{ inputs.compile_version }}-${{ inputs.config_file }}-packages-server.zip packages-server
+        mv ${{ inputs.compile_version }}-${{ inputs.config_file }}-packages-server.zip $OPENWRTROOT/bin/targets/$TARGET/$SUBTARGET
         make checksum
-        mv bin/targets/x86/64/sha256sums bin/targets/x86/64/${{ inputs.compile_version }}-sha256sums
+        mv bin/targets/x86/64/sha256sums bin/targets/x86/64/${{ inputs.compile_version }}-${{ inputs.config_file }}-sha256sums
         echo "GENERATE_STATUS=success" >> $GITHUB_OUTPUT
 
         
@@ -429,6 +429,7 @@ jobs:
           touch release.txt
           echo "本次编译的openwrt源：${{ inputs.openwrt_source }}
                 后台地址：192.168.4.1
+                配置文件：immoral-标准 merged-全量 lite-精简
                 full   = 全插件
                 docker = 带docker" >> release.txt
           echo "RELEASE_STATUS=success" >> $GITHUB_OUTPUT
