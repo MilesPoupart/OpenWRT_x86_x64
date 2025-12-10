@@ -56,15 +56,15 @@ rm -rf feeds/packages/utils/dockerd
 rm -rf feeds/packages/utils/docker-compose
 rm -rf feeds/packages/utils/runc
 rm -rf feeds/packages/utils/containerd
-# git clone --depth=1 https://github.com/sbwml/packages_utils_docker.git feeds/packages/utils/docker
-# git clone --depth=1 https://github.com/sbwml/packages_utils_dockerd.git feeds/packages/utils/dockerd
-# git clone --depth=1 https://github.com/sbwml/packages_utils_runc.git feeds/packages/utils/runc
-# git clone --depth=1 https://github.com/sbwml/packages_utils_containerd.git feeds/packages/utils/containerd
-github_partial_clone MilesPoupart packages use_default_branch utils/docker feeds/packages/utils/docker
-github_partial_clone MilesPoupart packages use_default_branch utils/dockerd feeds/packages/utils/dockerd
-github_partial_clone MilesPoupart packages use_default_branch utils/docker-compose feeds/packages/utils/docker-compose
-github_partial_clone MilesPoupart packages use_default_branch utils/runc feeds/packages/utils/runc
-github_partial_clone MilesPoupart packages use_default_branch utils/containerd feeds/packages/utils/containerd
+git clone --depth=1 https://github.com/sbwml/packages_utils_docker.git feeds/packages/utils/docker
+git clone --depth=1 https://github.com/sbwml/packages_utils_dockerd.git feeds/packages/utils/dockerd
+git clone --depth=1 https://github.com/sbwml/packages_utils_runc.git feeds/packages/utils/runc
+git clone --depth=1 https://github.com/sbwml/packages_utils_containerd.git feeds/packages/utils/containerd
+# github_partial_clone MilesPoupart packages use_default_branch utils/docker feeds/packages/utils/docker
+# github_partial_clone MilesPoupart packages use_default_branch utils/dockerd feeds/packages/utils/dockerd
+# github_partial_clone MilesPoupart packages use_default_branch utils/docker-compose feeds/packages/utils/docker-compose
+# github_partial_clone MilesPoupart packages use_default_branch utils/runc feeds/packages/utils/runc
+# github_partial_clone MilesPoupart packages use_default_branch utils/containerd feeds/packages/utils/containerd
 
 mkdir -p package/community
 pushd package/community
@@ -108,7 +108,8 @@ git clone --depth=1 https://github.com/sbwml/luci-app-mosdns
 
 # Add smartdns
 rm -rf ../../customfeeds/packages/net/smartdns
-github_partial_clone MilesPoupart packages master net/smartdns ../../customfeeds/packages/net/smartdns
+git clone --depth=1 https://github.com/pymumu/openwrt-smartdns ../../customfeeds/packages/net/smartdns
+# github_partial_clone MilesPoupart packages master net/smartdns ../../customfeeds/packages/net/smartdns
 
 # Add zerotier
 rm -rf ../../customfeeds/packages/net/zerotier
