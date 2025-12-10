@@ -53,7 +53,7 @@ git clone https://github.com/sbwml/packages_lang_golang -b 25.x feeds/packages/l
 # Docker ecosystem
 rm -rf feeds/packages/utils/docker
 rm -rf feeds/packages/utils/dockerd
-rm -rf feeds/packages/utils/docker-compose
+# rm -rf feeds/packages/utils/docker-compose
 rm -rf feeds/packages/utils/runc
 rm -rf feeds/packages/utils/containerd
 git clone --depth=1 https://github.com/sbwml/packages_utils_docker.git feeds/packages/utils/docker
