@@ -146,9 +146,9 @@ rm -rf ../../customfeeds/packages/net/v2ray-geodata
 rm -rf ../../customfeeds/packages/net/v2ray-plugin
 rm -rf ../../customfeeds/packages/net/xray-core
 rm -rf ../../customfeeds/packages/net/xray-plugin
-git clone --depth=1 https://github.com/xiaorouji/openwrt-passwall
-git clone --depth=1 https://github.com/xiaorouji/openwrt-passwall2
-git clone --depth=1 https://github.com/xiaorouji/openwrt-passwall-packages
+git clone --depth=1 https://github.com/Openwrt-Passwall/openwrt-passwall
+git clone --depth=1 https://github.com/Openwrt-Passwall/openwrt-passwall2
+git clone --depth=1 https://github.com/Openwrt-Passwall/openwrt-passwall-packages
 
 # Add other applications
 rm -rf ../../customfeeds/luci/applications/luci-app-onliner
