@@ -133,6 +133,12 @@ jobs:
         df -hT $PWD
         git clone -b ${{ inputs.openwrt_branch }} $REPO_URL openwrt
 
+    - name: Apply Download Patch
+      if: inputs.task_setting != 'build-only' && inputs.openwrt_branch == 'openwrt-25.12'
+      run: |
+        cd openwrt
+        patch -p1 < ../immortalwrt/001-download-revert-mirror-hash-check.patch
+
     - name: Update Feeds
       if: inputs.task_setting != 'build-only'
       id: update
