@@ -151,6 +151,38 @@ jobs:
       run: |
         cd openwrt
         patch -p1 < ../immortalwrt/001-download-revert-mirror-hash-check.patch
+
+    - name: Fix LuCI Package Versions (APK Compatibility)
+      if: inputs.task_setting != 'build-only' && inputs.openwrt_branch == 'openwrt-25.12'
+      run: |
+        cd openwrt
+        # Fix APK version format incompatibility for LuCI packages
+        # Issue: APK doesn't accept hyphen in version (e.g. 1.0-5), must use dots (1.0.5)
+        # Scan all community package Makefiles using luci.mk with non-empty PKG_RELEASE
+        for makefile in $(find package/community -name Makefile -type f); do
+          if grep -q "include.*feeds/luci/luci.mk" "$makefile" 2>/dev/null; then
+            version=$(grep "^PKG_VERSION:=" "$makefile" | head -1 | sed 's/PKG_VERSION:=//' | tr -d ' ')
+            release=$(grep "^PKG_RELEASE:=" "$makefile" | head -1 | sed 's/PKG_RELEASE:=//' | tr -d ' ')
+            
+            # Only process if PKG_RELEASE is not empty
+            if [ -n "$release" ] && [ "$release" != "" ]; then
+              # Replace hyphens with dots and append release
+              new_version="${version//-/.}${release:+.}${release}"
+              
+              # Update version and clear release
+              sed -i "s|^PKG_VERSION:=.*|PKG_VERSION:=$new_version|" "$makefile"
+              sed -i "s|^PKG_RELEASE:=.*|PKG_RELEASE:=|" "$makefile"
+              
+              # Fix PKG_PO_VERSION if exists (remove reference to PKG_RELEASE)
+              sed -i 's/PKG_PO_VERSION:=\$(PKG_VERSION)-\$(PKG_RELEASE)/PKG_PO_VERSION:=$(PKG_VERSION)/' "$makefile"
+              
+              # Fix version display in config section (e.g., luci-app-smartdns)
+              sed -i 's/Version: \$(PKG_VERSION)-\$(PKG_RELEASE)/Version: $(PKG_VERSION)/' "$makefile"
+              
+              echo "Fixed $makefile: $version-$release → $new_version"
+            fi
+          fi
+        done
         
     # - name: Reset Version
     #   if: inputs.task_setting != 'build-only'
