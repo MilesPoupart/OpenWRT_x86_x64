@@ -157,33 +157,36 @@ jobs:
       run: |
         cd openwrt
         # Fix APK version format incompatibility for LuCI packages
-        # Issue: APK doesn't accept hyphen in version (e.g. 1.0-5), must use dots (1.0.5)
-        # Scan all community package Makefiles using luci.mk with non-empty PKG_RELEASE
+        # The build system already generates VERSION=$(PKG_VERSION)-r$(PKG_RELEASE) which is APK-compatible.
+        # The real problem is Makefiles that manually concatenate $(PKG_VERSION)-$(PKG_RELEASE) (missing 'r'),
+        # and PKG_VERSION values that contain hyphens.
         for makefile in $(find package/community -name Makefile -type f); do
           if grep -q "include.*feeds/luci/luci.mk" "$makefile" 2>/dev/null; then
+            changed=false
+
+            # 1. Fix hyphens in PKG_VERSION value (e.g. 1.0-beta1 → 1.0.beta1)
             version=$(grep "^PKG_VERSION:=" "$makefile" | head -1 | sed 's/PKG_VERSION:=//' | tr -d ' ')
-            release=$(grep "^PKG_RELEASE:=" "$makefile" | head -1 | sed 's/PKG_RELEASE:=//' | tr -d ' ')
-            
-            # Only process if PKG_RELEASE is not empty
-            if [ -n "$release" ] && [ "$release" != "" ]; then
-              # Replace hyphens with dots and append release
-              new_version="${version//-/.}${release:+.}${release}"
-              
-              # Update version and clear release
+            if [ -n "$version" ] && echo "$version" | grep -q '-'; then
+              new_version="${version//-/.}"
               sed -i "s|^PKG_VERSION:=.*|PKG_VERSION:=$new_version|" "$makefile"
-              sed -i "s|^PKG_RELEASE:=.*|PKG_RELEASE:=|" "$makefile"
-              
-              # Fix PKG_PO_VERSION if exists (remove reference to PKG_RELEASE)
-              sed -i 's/PKG_PO_VERSION:=\$(PKG_VERSION)-\$(PKG_RELEASE)/PKG_PO_VERSION:=$(PKG_VERSION)/' "$makefile"
-              
-              # Fix version display in config section (e.g., luci-app-smartdns)
-              sed -i 's/Version: \$(PKG_VERSION)-\$(PKG_RELEASE)/Version: $(PKG_VERSION)/' "$makefile"
-              
-              echo "Fixed $makefile: $version-$release → $new_version"
+              echo "  Fixed PKG_VERSION: $version → $new_version in $makefile"
+              changed=true
+            fi
+
+            # 2. Fix manual $(PKG_VERSION)-$(PKG_RELEASE) concatenations → $(VERSION)
+            #    The build system's $(VERSION) already uses the APK-compatible -r format
+            if grep -q '\$(PKG_VERSION)-\$(PKG_RELEASE)' "$makefile" 2>/dev/null; then
+              sed -i 's/\$(PKG_VERSION)-\$(PKG_RELEASE)/$(VERSION)/g' "$makefile"
+              echo "  Fixed manual version concatenation → \$(VERSION) in $makefile"
+              changed=true
+            fi
+
+            if [ "$changed" = true ]; then
+              echo "Patched: $makefile"
             fi
           fi
         done
-        
+
     # - name: Reset Version
     #   if: inputs.task_setting != 'build-only'
     #   id: reset
