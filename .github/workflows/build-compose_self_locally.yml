@@ -216,11 +216,11 @@ jobs:
               changed=true
             fi
 
-            # 2. Fix manual $(PKG_VERSION)-$(PKG_RELEASE) concatenations → $(VERSION)
-            #    The build system's $(VERSION) already uses the APK-compatible -r format
+            # 2. Fix manual $(PKG_VERSION)-$(PKG_RELEASE) → $(PKG_VERSION)-r$(PKG_RELEASE)
+            #    APK requires -r prefix before release number
             if grep -q '\$(PKG_VERSION)-\$(PKG_RELEASE)' "$makefile" 2>/dev/null; then
-              sed -i 's/\$(PKG_VERSION)-\$(PKG_RELEASE)/$(VERSION)/g' "$makefile"
-              echo "  Fixed manual version concatenation → \$(VERSION) in $makefile"
+              sed -i 's/\$(PKG_VERSION)-\$(PKG_RELEASE)/$(PKG_VERSION)-r$(PKG_RELEASE)/g' "$makefile"
+              echo "  Fixed version format: added -r prefix in $makefile"
               changed=true
             fi
 
