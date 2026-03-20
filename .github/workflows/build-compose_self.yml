@@ -219,27 +219,36 @@ jobs:
       run: |
         cd $OPENWRTROOT
         # Fix APK version format incompatibility for LuCI packages
-        # The build system already generates VERSION=$(PKG_VERSION)-r$(PKG_RELEASE) which is APK-compatible.
-        # The real problem is Makefiles that manually concatenate $(PKG_VERSION)-$(PKG_RELEASE) (missing 'r'),
-        # and PKG_VERSION values that contain hyphens.
+        # APK requires version format: X.Y.Z or X.Y.Z-rN
+        # The main version part (before -r) must NOT contain hyphens
         for makefile in $(find package/community -name Makefile -type f); do
           if grep -q "include.*feeds/luci/luci.mk" "$makefile" 2>/dev/null; then
             changed=false
 
-            # 1. Fix hyphens in PKG_VERSION value (e.g. 1.0-beta1 → 1.0.beta1)
+            # Get current PKG_VERSION
             version=$(grep "^PKG_VERSION:=" "$makefile" | head -1 | sed 's/PKG_VERSION:=//' | tr -d ' ')
-            if [ -n "$version" ] && echo "$version" | grep -q '-'; then
-              new_version="${version//-/.}"
-              sed -i "s|^PKG_VERSION:=.*|PKG_VERSION:=$new_version|" "$makefile"
-              echo "  Fixed PKG_VERSION: $version → $new_version in $makefile"
-              changed=true
+            
+            if [ -n "$version" ]; then
+              # Case 1: PKG_VERSION is already X.Y.Z-rN format - VALID, don't touch it
+              # e.g., 3.2.0-r5 is valid APK version
+              if echo "$version" | grep -qE '^[0-9]+\.[0-9]+\.[0-9]+-r[0-9]+$'; then
+                echo "  PKG_VERSION $version is already valid APK format, skipping: $makefile"
+              
+              # Case 2: PKG_VERSION contains hyphens but NOT in -rN format
+              # e.g., 1.0-beta1, 5.8.0-20240106 -> replace hyphens with dots
+              elif echo "$version" | grep -q '-'; then
+                new_version="${version//-/.}"
+                sed -i "s|^PKG_VERSION:=.*|PKG_VERSION:=$new_version|" "$makefile"
+                echo "  Fixed PKG_VERSION: $version -> $new_version in $makefile"
+                changed=true
+              fi
             fi
 
-            # 2. Fix manual $(PKG_VERSION)-$(PKG_RELEASE) → $(PKG_VERSION)-r$(PKG_RELEASE)
-            #    APK requires -r prefix before release number
+            # Fix manual $(PKG_VERSION)-$(PKG_RELEASE) -> $(PKG_VERSION)-r$(PKG_RELEASE)
+            # luci.mk line 161 already uses -r format, but some custom Makefiles may not
             if grep -q '\$(PKG_VERSION)-\$(PKG_RELEASE)' "$makefile" 2>/dev/null; then
               sed -i 's/\$(PKG_VERSION)-\$(PKG_RELEASE)/$(PKG_VERSION)-r$(PKG_RELEASE)/g' "$makefile"
-              echo "  Fixed version format: added -r prefix in $makefile"
+              echo "  Fixed version concatenation: added -r prefix in $makefile"
               changed=true
             fi
 
