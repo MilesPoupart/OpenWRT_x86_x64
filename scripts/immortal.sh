@@ -91,7 +91,7 @@ rm -rf openwrt-package/luci-app-verysync
 rm -rf openwrt-package/luci-app-softethervpn
 rm -rf openwrt-package/luci-app-ramfree
 rm -rf openwrt-package/luci-app-nginx-pingos
-rm -rf openwrt-package/luci-app-openvpn-server
+rm -rf openwrt-package/luci-app-openvpn-server/root/etc/config
 rm -rf openwrt-package/luci-app-socat/root/etc/config
 
 # Add luci-app-netspeedtest
