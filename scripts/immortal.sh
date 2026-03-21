@@ -116,6 +116,10 @@ git clone --depth=1 https://github.com/pymumu/openwrt-smartdns ../../customfeeds
 rm -rf ../../customfeeds/packages/net/zerotier
 github_partial_clone immortalwrt packages master net/zerotier ../../customfeeds/packages/net/zerotier
 
+# Add luci-app-ustreamer
+rm -rf ../../customfeeds/luci/applications/luci-app-ustreamer
+github_partial_clone immortalwrt luci master applications/luci-app-ustreamer ../../customfeeds/luci/applications/luci-app-ustreamer
+
 # Add luci-app-ssr-plus
 git clone --depth=1 https://github.com/fw876/helloworld
 
