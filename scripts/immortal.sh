@@ -17,6 +17,7 @@ function github_partial_clone() {
     local branch_name="$3"
     local required_dir="$4"
     local saved_dir="$5"
+    local reset_commit="$6"
     local url_prefix="https://github.com/"
     
     local branch_option=""
@@ -36,6 +37,14 @@ function github_partial_clone() {
         git clone --depth=1 ${branch_option} "${url_prefix}${author_name}/${repository_name}.git" "$repo_path"
     else
         echo "Reusing existing ${author_name}/${repository_name} repository..."
+    fi
+
+    # Reset to specific commit if provided
+    if [ -n "$reset_commit" ]; then
+        echo "Resetting ${author_name}/${repository_name} to commit ${reset_commit}..."
+        pushd "$repo_path" > /dev/null
+        git reset --hard "$reset_commit"
+        popd > /dev/null
     fi
 
     # Copy (not move) files to preserve the repository for future use
@@ -168,7 +177,7 @@ github_partial_clone linkease nas-packages use_default_branch multimedia/ffmpeg-
 
 # Add OpenClash
 rm -rf ../../customfeeds/luci/applications/luci-app-openclash
-github_partial_clone vernesong OpenClash use_default_branch luci-app-openclash luci-app-openclash
+github_partial_clone vernesong OpenClash use_default_branch luci-app-openclash luci-app-openclash 79dee90996b99dbac377c220914b0d73b2941e0d
 
 # add wrtbwmon
 github_partial_clone brvphoenix luci-app-wrtbwmon use_default_branch luci-app-wrtbwmon luci-app-wrtbwmon
