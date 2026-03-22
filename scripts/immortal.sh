@@ -30,13 +30,28 @@ function github_partial_clone() {
     # Create author-specific directory to avoid conflicts between different authors with same repo names
     local repo_path="${clone_dir}/${author_name}/${repository_name}"
     
+    # Determine if we need full history (when reset_commit is specified)
+    local depth_option="--depth=1"
+    if [ -n "$reset_commit" ]; then
+        depth_option=""
+    fi
+    
     # Only clone if repository doesn't exist
     if [ ! -d "$repo_path" ]; then
         echo "Cloning ${author_name}/${repository_name} for the first time..."
         mkdir -p "${clone_dir}/${author_name}"
-        git clone --depth=1 ${branch_option} "${url_prefix}${author_name}/${repository_name}.git" "$repo_path"
+        git clone ${depth_option} ${branch_option} "${url_prefix}${author_name}/${repository_name}.git" "$repo_path"
     else
         echo "Reusing existing ${author_name}/${repository_name} repository..."
+        # If reset_commit is specified and repo is shallow, unshallow it
+        if [ -n "$reset_commit" ]; then
+            pushd "$repo_path" > /dev/null
+            if git rev-parse --is-shallow-repository | grep -q true; then
+                echo "Repository is shallow, fetching full history for reset..."
+                git fetch --unshallow
+            fi
+            popd > /dev/null
+        fi
     fi
 
     # Reset to specific commit if provided
