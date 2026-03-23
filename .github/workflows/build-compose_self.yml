@@ -181,13 +181,6 @@ jobs:
       run: |
         cd $OPENWRTROOT/customfeeds/luci/modules/luci-mod-status/htdocs/luci-static/resources/view/status/include
         sed -i '/_('\''Load Average'\''),/i\\t\t\t_('\''Github'\''),           E('\''a'\'', { '\''href'\'': '\''https://github.com/MilesPoupart/OpenWRT_x86_x64'\'' }, [ _('\''固件下载'\'') ]),' 10_system.js
-
-    - name: Install Feeds
-      if: inputs.task_setting != 'build-only'
-      run: |
-        cd $OPENWRTROOT
-        cat feeds.conf.default
-        ./scripts/feeds install -a
         
     - name: Load Custom Configuration
       if: inputs.task_setting != 'build-only'
@@ -199,6 +192,7 @@ jobs:
         ../$DIY_SH
         ../scripts/preset-clash-core.sh amd64-v2
         ../scripts/preset-terminal-tools.sh
+        ./scripts/feeds update -a && ./scripts/feeds install -a
         if [ "${{ inputs.compile_version }}" == "docker" ]; then
             echo '
         CONFIG_DOCKER_CGROUP_OPTIONS=y
