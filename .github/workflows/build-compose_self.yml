@@ -186,13 +186,13 @@ jobs:
       if: inputs.task_setting != 'build-only'
       run: |
         [ -e files ] && mv files $OPENWRTROOT/files
-        [ -e $CONFIG_FILE ] && mv $CONFIG_FILE $OPENWRTROOT/.config
         chmod +x scripts/*.sh
         cd $OPENWRTROOT
         ../$DIY_SH
         ../scripts/preset-clash-core.sh amd64-v2
         ../scripts/preset-terminal-tools.sh
         ./scripts/feeds update -a && ./scripts/feeds install -a
+        [ -e ../$CONFIG_FILE ] && mv ../$CONFIG_FILE .config
         if [ "${{ inputs.compile_version }}" == "docker" ]; then
             echo '
         CONFIG_DOCKER_CGROUP_OPTIONS=y
