@@ -73,18 +73,6 @@ git clone --depth=1 https://github.com/sbwml/packages_utils_runc.git feeds/packa
 git clone --depth=1 https://github.com/sbwml/packages_utils_containerd.git feeds/packages/utils/containerd
 git clone --depth=1 https://github.com/sbwml/luci-app-dockerman.git feeds/luci/applications/luci-app-dockerman
 
-# Fix samba4 ICU dependency issue
-# Change +PACKAGE_icu:icu to +icu to make ICU a mandatory dependency
-if [ -f "feeds/packages/net/samba4/Makefile" ]; then
-    if grep -q '+PACKAGE_icu:icu' feeds/packages/net/samba4/Makefile; then
-        echo "Fixing samba4 ICU dependency..."
-        sed -i 's/+PACKAGE_icu:icu/+icu/g' feeds/packages/net/samba4/Makefile
-        echo "Samba4 ICU dependency fixed."
-    else
-        echo "Samba4 ICU dependency already fixed or not present, skipping."
-    fi
-fi
-
 mkdir -p package/community
 pushd package/community
 
