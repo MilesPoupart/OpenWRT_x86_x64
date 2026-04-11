@@ -116,6 +116,16 @@ git clone --depth=1 https://github.com/sirpdboy/luci-app-taskplan
 sed -i '/"admin\/control": {/,/^[[:space:]]*},$/d' luci-app-taskplan/luci-app-taskplan/root/usr/share/luci/menu.d/luci-app-taskplan.json
 sed -i 's/"admin\/control\/taskplan"/"admin\/system\/taskplan"/g' luci-app-taskplan/luci-app-taskplan/root/usr/share/luci/menu.d/luci-app-taskplan.json
 
+# Add luci-app-chatgpt-web
+git clone --depth=1 https://github.com/sirpdboy/luci-app-chatgpt-web
+
+# Replace luci-app-netdata with sirpdboy's version (adds settings & config editor)
+rm -rf ../../customfeeds/luci/applications/luci-app-netdata
+git clone --depth=1 https://github.com/sirpdboy/luci-app-netdata
+# Uncomment below if netdata menu entry doesn't show up in LuCI (removes uci config dependency)
+# sed -i '/"uci":.*"netdata"/d' luci-app-netdata/luci-app-netdata/root/usr/share/luci/menu.d/luci-app-netdata.json
+# sed -i 's/\("acl": \[ "luci-app-netdata" \]\),/\1/' luci-app-netdata/luci-app-netdata/root/usr/share/luci/menu.d/luci-app-netdata.json
+
 # Add mosdns
 rm -rf ../../customfeeds/packages/net/mosdns
 rm -rf ../../customfeeds/packages/utils/v2dat
@@ -124,8 +134,8 @@ git clone --depth=1 https://github.com/sbwml/luci-app-mosdns
 
 # Add smartdns
 rm -rf ../../customfeeds/packages/net/smartdns
-git clone --depth=1 https://github.com/pymumu/openwrt-smartdns ../../customfeeds/packages/net/smartdns
-# github_partial_clone MilesPoupart packages master net/smartdns ../../customfeeds/packages/net/smartdns
+# git clone --depth=1 https://github.com/pymumu/openwrt-smartdns ../../customfeeds/packages/net/smartdns
+git clone --depth=1 https://github.com/MilesPoupart/openwrt-smartdns ../../customfeeds/packages/net/smartdns
 
 # Add zerotier
 rm -rf ../../customfeeds/packages/net/zerotier
