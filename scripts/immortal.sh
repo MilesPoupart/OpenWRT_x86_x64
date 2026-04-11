@@ -187,6 +187,19 @@ github_partial_clone linkease nas-packages use_default_branch multimedia/ffmpeg-
 rm -rf ../../customfeeds/luci/applications/luci-app-openclash
 github_partial_clone vernesong OpenClash use_default_branch luci-app-openclash luci-app-openclash
 
+# Patch OpenClash: ISP SNI-blocking fix (remove proxy:DIRECT, inject sub_ua)
+OPENCLASH_OVERWRITE="luci-app-openclash/root/etc/openclash/custom/openclash_custom_overwrite.sh"
+if [ -f "$OPENCLASH_OVERWRITE" ]; then
+    sed -i '/^exit 0$/d' "$OPENCLASH_OVERWRITE"
+    cat "$GITHUB_WORKSPACE/data/openclash/openclash_provider_fix.sh" >> "$OPENCLASH_OVERWRITE"
+    echo "exit 0" >> "$OPENCLASH_OVERWRITE"
+    echo "OpenClash: provider fix injected into custom overwrite script."
+fi
+cp -f "$GITHUB_WORKSPACE/data/openclash/openclash_isp_block_test.sh" \
+    luci-app-openclash/root/usr/share/openclash/openclash_isp_block_test.sh
+chmod +x luci-app-openclash/root/usr/share/openclash/openclash_isp_block_test.sh
+echo "OpenClash: ISP block test script installed."
+
 # add wrtbwmon
 github_partial_clone brvphoenix luci-app-wrtbwmon use_default_branch luci-app-wrtbwmon luci-app-wrtbwmon
 github_partial_clone brvphoenix wrtbwmon use_default_branch wrtbwmon wrtbwmon
