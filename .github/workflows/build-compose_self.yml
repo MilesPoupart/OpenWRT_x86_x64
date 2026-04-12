@@ -281,6 +281,8 @@ jobs:
         file: ./Dockerfile
         push: true
         tags: ${{ env.IMAGE }}
+        labels: |
+          org.opencontainers.image.revision=${{ github.sha }}
         
     - name: Image digest
       if: inputs.task_setting != 'build-only'
@@ -294,6 +296,7 @@ jobs:
 
     outputs:
       OPENWRTROOT: ${{ steps.clean.outputs.OPENWRTROOT }}
+      SOURCE_SHA: ${{ steps.image_meta.outputs.SOURCE_SHA }}
 
     steps:
 
@@ -317,6 +320,17 @@ jobs:
       run: |
         docker pull $IMAGE
         docker images
+
+    - name: Read source commit from image label
+      id: image_meta
+      run: |
+        SOURCE_SHA=$(docker inspect --format='{{index .Config.Labels "org.opencontainers.image.revision"}}' "$IMAGE")
+        if [ -z "$SOURCE_SHA" ] || [ "$SOURCE_SHA" = "<no value>" ]; then
+          echo "No source commit label found, falling back to github.sha"
+          SOURCE_SHA="${{ github.sha }}"
+        fi
+        echo "SOURCE_SHA=$SOURCE_SHA" >> $GITHUB_OUTPUT
+        echo "Source commit: $SOURCE_SHA"
     
     - name: Copy Files
       id: copy
@@ -394,6 +408,7 @@ jobs:
       RELEASE_TAG: ${{ steps.tag.outputs.RELEASE_TAG }}
       RELEASE_STATUS: ${{ steps.tag.outputs.RELEASE_STATUS }}
       KERNEL_VERSION: ${{ steps.generate.outputs.KERNEL_VERSION }}
+      SOURCE_SHA: ${{ needs.CompileInitialize.outputs.SOURCE_SHA }}
 
     steps:
 
@@ -504,7 +519,7 @@ jobs:
       with:
           name: ${{ needs.CompileFirmware.outputs.RELEASE_DATE }} x86-64-Linux-${{ needs.CompileFirmware.outputs.KERNEL_VERSION }} 固件
           tag_name: ${{ needs.CompileFirmware.outputs.RELEASE_TAG }}
-          target_commitish: ${{ github.sha }}
+          target_commitish: ${{ needs.CompileFirmware.outputs.SOURCE_SHA }}
           body_path: release.txt
           files: ${{ needs.CompileFirmware.outputs.FIRMWARE }}/*
 
