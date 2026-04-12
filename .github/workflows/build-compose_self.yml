@@ -497,7 +497,7 @@ jobs:
         docker images
 
     - name: Upload firmware to release
-      uses: softprops/action-gh-release@v2
+      uses: softprops/action-gh-release@v3
       if: needs.CompileFirmware.outputs.RELEASE_STATUS == 'success' && !cancelled() && env.UPLOAD_RELEASE == 'true'
       env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -509,7 +509,7 @@ jobs:
           files: ${{ needs.CompileFirmware.outputs.FIRMWARE }}/*
 
     - name: Delete releases and workflow runs
-      uses: ophub/delete-releases-workflows@v0
+      uses: ophub/delete-releases-workflows@main
       if: env.UPLOAD_RELEASE == 'true' && !cancelled()
       with:
         delete_releases: true
