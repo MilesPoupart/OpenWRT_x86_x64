@@ -97,7 +97,7 @@ jobs:
 
     - name: Checkout
       if: inputs.task_setting != 'build-only'
-      uses: actions/checkout@v5
+      uses: actions/checkout@v6
 
     - name: Initialization Environment
       if: inputs.task_setting != 'build-only'
@@ -314,7 +314,7 @@ jobs:
         ulimit -a
 
     - name: Checkout
-      uses: actions/checkout@v5
+      uses: actions/checkout@v6
       
     - name: Pull Image
       run: |
