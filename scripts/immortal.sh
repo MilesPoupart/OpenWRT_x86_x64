@@ -267,6 +267,8 @@ rm -rf ../../customfeeds/luci/applications/luci-app-smartdns
 git clone --depth=1 https://github.com/pymumu/luci-app-smartdns
 
 # easytier
+rm -rf ../../customfeeds/luci/applications/luci-app-easytier
+rm -rf ../../customfeeds/packages/net/easytier
 git clone --depth=1 https://github.com/EasyTier/luci-app-easytier.git
 
 # Add luci-app-wolplus
