@@ -145,8 +145,6 @@ git clone --depth=1 https://github.com/sbwml/feeds_packages_net_zerotier.git ../
 github_partial_clone sbwml openwrt_pkgs use_default_branch luci-app-zerotier luci-app-zerotier
 # Move zerotier from services to vpn menu
 sed -i 's|admin/services/zerotier|admin/vpn/zerotier|g' luci-app-zerotier/root/usr/share/luci/menu.d/luci-app-zerotier.json
-# git clone --depth=1 https://github.com/MilesPoupart/feeds_packages_net_zerotier.git ../../customfeeds/packages/net/zerotier
-# github_partial_clone immortalwrt packages master net/zerotier ../../customfeeds/packages/net/zerotier
 
 # Add luci-app-ustreamer
 rm -rf ../../customfeeds/luci/applications/luci-app-ustreamer
@@ -261,8 +259,7 @@ sed -i 's|admin/services/openlist2|admin/nas/openlist2|g' luci-app-openlist2/luc
 rm -rf ../../customfeeds/packages/net/qBittorrent
 rm -rf ../../customfeeds/packages/libs/rblibtorrent
 rm -rf ../../customfeeds/luci/applications/luci-app-qbittorrent
-# git clone --depth=1 https://github.com/sbwml/luci-app-qbittorrent
-git clone --depth=1 https://github.com/MilesPoupart/luci-app-qbittorrent
+git clone --depth=1 https://github.com/sbwml/luci-app-qbittorrent
 
 # Replace luci-app-diskman with sbwml's version
 rm -rf ../../customfeeds/luci/applications/luci-app-diskman
