@@ -156,6 +156,12 @@ github_partial_clone immortalwrt luci master applications/luci-app-ustreamer ../
 # Add luci-app-ssr-plus
 git clone --depth=1 https://github.com/fw876/helloworld
 
+# UPX 是软件包的宿主工具，统一安装和调用 hostpkg 下的版本。
+sed -i 's|$(STAGING_DIR_HOST)/bin/upx|$(STAGING_DIR_HOSTPKG)/bin/upx|g' \
+    helloworld/mihomo/Makefile helloworld/xray-core/Makefile
+sed -i 's|$(STAGING_DIR_HOST)/bin|$(HOST_BUILD_PREFIX)/bin|g' \
+    helloworld/upx/Makefile
+
 # Add luci-app-passwall
 rm -rf ../../customfeeds/luci/applications/luci-app-passwall
 rm -rf ../../customfeeds/luci/applications/luci-app-passwall2
