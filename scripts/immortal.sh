@@ -78,6 +78,9 @@ git clone --depth=1 https://github.com/sbwml/packages_utils_docker.git feeds/pac
 git clone --depth=1 https://github.com/sbwml/packages_utils_dockerd.git feeds/packages/utils/dockerd
 git clone --depth=1 https://github.com/sbwml/packages_utils_runc.git feeds/packages/utils/runc
 git clone --depth=1 https://github.com/sbwml/packages_utils_containerd.git feeds/packages/utils/containerd
+# 保留 urfave/cli 的 go:embed 资源，Go 默认源码复制规则会遗漏这些非代码文件。
+sed -i 's|^GO_PKG_INSTALL_EXTRA:=|GO_PKG_INSTALL_EXTRA:=vendor/github.com/urfave/cli/v3/autocomplete/ vendor/github.com/urfave/cli-docs/v3/.*[.]gotmpl |' \
+    feeds/packages/utils/containerd/Makefile
 git clone --depth=1 https://github.com/sbwml/luci-app-dockerman.git feeds/luci/applications/luci-app-dockerman
 
 mkdir -p package/community
